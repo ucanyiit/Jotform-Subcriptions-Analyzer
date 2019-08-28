@@ -1,0 +1,4 @@
+export const LOGIN = "LOGIN";
+export const LOGOUT = "LOGOUT";
+export const UPDATE_SUBMISSION_DETAILS = "SUBMISSION_DETAILS";
+export const UPDATE_FORM_DETAILS = "FORM_DETAILS";

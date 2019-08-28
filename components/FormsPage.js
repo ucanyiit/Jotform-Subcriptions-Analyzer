@@ -3,9 +3,10 @@ import { Body, Container, Content, ListItem, Right, Spinner, Text } from 'native
 import React, { Component } from 'react';
 import { View } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import { connect } from "react-redux";
 import styles from './styles';
 
-export default class FormsPage extends Component {
+class FormsPage extends Component {
 
     constructor(props) {
         super(props);
@@ -16,7 +17,7 @@ export default class FormsPage extends Component {
         let that = this;
         return axios.get('https://api.jotform.com/user/forms', {
             params: {
-                apikey: "8876d82ca5bc5f1ded14347d80c49f4c"
+                apikey: this.props.user.content.apikey
             }
         })
             .then(function (response) {
@@ -66,7 +67,7 @@ export default class FormsPage extends Component {
         );
     }
 
-    renderLogin = () => {
+    renderForms = () => {
         return (
             <Container>
                 <Content>
@@ -81,8 +82,16 @@ export default class FormsPage extends Component {
     }
 
     render() {
+        console.log(this.props);
         console.log(this.state);
         if (this.state.isLoading) return this.renderWaiting()
-        else return this.renderLogin()
+        else return this.renderForms()
     }
 }
+
+const mapStateToProps = state => {
+    const user = state.user;
+    return { user };
+};
+
+export default connect(mapStateToProps)(FormsPage);

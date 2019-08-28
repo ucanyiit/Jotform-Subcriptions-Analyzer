@@ -3,12 +3,14 @@ import { Button, Container, Content, Form, Input, Item, Spinner, Text } from 'na
 import qs from 'qs';
 import React, { Component } from 'react';
 import { View } from 'react-native';
+import { connect } from "react-redux";
+import { login } from "../redux/actions";
 import styles from './styles';
 
-export default class LoginPage extends Component {
+class LoginPage extends Component {
     constructor(props) {
         super(props);
-        this.state = { isLoading: false }
+        this.state = { isLoading: false, error: false }
     }
 
     onLogin() {
@@ -19,7 +21,7 @@ export default class LoginPage extends Component {
         axios.post('https://api.jotform.com/user/login', qs.stringify({ username, password, 'access': 'full', 'appName': 'ucanyiit' }))
             .then(function (response) {
                 console.log(response);
-                that.setState({ isLoading: false, error: false, response: response });
+                that.props.login(response.data.content);
             })
             .catch(function (error) {
                 console.log(error);
@@ -97,3 +99,11 @@ export default class LoginPage extends Component {
         else return this.renderLogin()
     }
 }
+
+function mapDispatchToProps(dispatch) {
+    return {
+        login: () => dispatch({ type: 'LOGIN' }),
+    }
+}
+
+export default connect(null, mapDispatchToProps)(LoginPage);
