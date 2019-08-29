@@ -1,23 +1,25 @@
 import axios from 'axios';
-import { Body, Container, Content, ListItem, Right, Spinner, Text } from 'native-base';
+import { Body, Container, Content, Header, Left, List, ListItem, Right, Spinner, Subtitle, Text, Title } from 'native-base';
 import React, { Component } from 'react';
 import { View } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome5';
 import { connect } from "react-redux";
+import { updateFormDetails } from "../redux/actions";
 import styles from './styles';
+import Logout from './LogoutButton';
 
 class FormsPage extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { isLoading: true }
+        that.setState({ isLoading: true });
     }
 
     componentDidMount() {
         let that = this;
+        // that.props.user.content.appKey = '8876d82ca5bc5f1ded14347d80c49f4c'; // for testing purposes
         return axios.get('https://api.jotform.com/user/forms', {
             params: {
-                apikey: this.props.user.content.apikey
+                apikey: this.props.user.content.appKey
             }
         })
             .then(function (response) {
@@ -34,23 +36,19 @@ class FormsPage extends Component {
             });
     }
 
+    onListItemPress = (id) => {
+        this.props.updateFormDetails(id);
+        this.props.navigation.navigate('FormDetails');
+    }
+
     renderRow = (formData) => {
         return (
-            <ListItem icon style={styles.productItem}>
+            <ListItem button onPress={() => { this.onListItemPress(formData.id) }} style={styles.productItem}>
                 <Body>
-                    <View style={styles.listItemView}>
-                        <View style={{ flex: 9, justifyContent: 'center' }}>
-                            <Text style={styles.productText}>
-                                {formData.title}
-                            </Text>
-                            <Text style={styles.nameText}>
-                                {formData.url}
-                            </Text>
-                        </View>
-                        <View style={{ flex: 2 }}>
-                            <Right style={{ justifyContent: 'center' }}>
-                                <Icon size={32} name="paypal" color="#555" />
-                            </Right>
+                    <View>
+                        <View>
+                            <Text style={styles.smallTitleText}>{formData.title}</Text>
+                            <Text style={styles.smallSubtitleText}>{formData.url}</Text>
                         </View>
                     </View>
                 </Body>
@@ -70,13 +68,24 @@ class FormsPage extends Component {
     renderForms = () => {
         return (
             <Container>
+                <Header>
+                    <Left />
+                    <Body>
+                        <Title>Forms</Title>
+                        <Subtitle>Subtitle</Subtitle>
+                    </Body>
+                    <Right />
+                </Header>
                 <Content>
-                    {
-                        this.state.forms.map(data => {
-                            return this.renderRow(data)
-                        })
-                    }
+                    <List>
+                        {
+                            this.state.forms && this.state.forms.map(data => {
+                                return this.renderRow(data)
+                            })
+                        }
+                    </List>
                 </Content>
+                <Logout />
             </Container>
         )
     }
@@ -94,4 +103,4 @@ const mapStateToProps = state => {
     return { user };
 };
 
-export default connect(mapStateToProps)(FormsPage);
+export default connect(mapStateToProps, { updateFormDetails })(FormsPage);

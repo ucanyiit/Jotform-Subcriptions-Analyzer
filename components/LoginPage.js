@@ -10,7 +10,7 @@ import styles from './styles';
 class LoginPage extends Component {
     constructor(props) {
         super(props);
-        this.state = { isLoading: false, error: false }
+        that.setState({ isLoading: false, error: false });
     }
 
     onLogin() {
@@ -22,23 +22,6 @@ class LoginPage extends Component {
             .then(function (response) {
                 console.log(response);
                 that.props.login(response.data.content);
-            })
-            .catch(function (error) {
-                console.log(error);
-                that.setState({ isLoading: false, error: true });
-            })
-            .then(function () {
-
-            });
-    }
-
-    onLogout() {
-        let that = this;
-        that.setState({ isLoading: true });
-        axios.get('https://api.jotform.com/user/logout')
-            .then(function (response) {
-                console.log(response);
-                that.setState({ isLoading: false, error: false });
             })
             .catch(function (error) {
                 console.log(error);
@@ -85,9 +68,6 @@ class LoginPage extends Component {
                     <Button style={styles.button} block bordered onPress={() => this.props.navigation.navigate('Register')}>
                         <Text>Don't have an acoount? Register instead</Text>
                     </Button>
-                    <Button style={styles.button} danger block bordered onPress={() => this.onLogout()}>
-                        <Text>Logout?</Text>
-                    </Button>
                 </Content>
             </Container>
         )
@@ -100,10 +80,4 @@ class LoginPage extends Component {
     }
 }
 
-function mapDispatchToProps(dispatch) {
-    return {
-        login: () => dispatch({ type: 'LOGIN' }),
-    }
-}
-
-export default connect(null, mapDispatchToProps)(LoginPage);
+export default connect(null, { login })(LoginPage);

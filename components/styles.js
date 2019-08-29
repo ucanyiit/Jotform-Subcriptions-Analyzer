@@ -12,14 +12,15 @@ module.exports = StyleSheet.create({
     productText: {
         fontSize: 18
     },
-    listItemView: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'stretch',
-        flex: 1,
+    smallTitleText: {
+        fontSize: 18
+    },
+    smallSubtitleText: {
+        color: '#777',
+        fontSize: 14
     },
     productItem: {
-        marginTop: 12
+        marginTop: 8
     },
     errorText: {
         color: '#d44',

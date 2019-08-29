@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
-import {LoginPage, FormsPage} from './pages';
+import { FormsPage, LoginPage } from './pages';
 
 class HomePage extends Component {
     render() {
-        if (this.props.loggedIn) return <FormsPage navigation={this.props.navigation}/>
-        else return <LoginPage navigation={this.props.navigation}/>
+        if (this.props.loggedIn) return <FormsPage navigation={this.props.navigation} />
+        else return <LoginPage navigation={this.props.navigation} />
     }
 }
 

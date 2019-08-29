@@ -1,34 +1,33 @@
 import axios from 'axios';
-import { Body, Container, Content, ListItem, Right, Text, Spinner } from 'native-base';
+import { Body, Container, Content, Header, Left, List, ListItem, Right, Spinner, Subtitle, Text, Title } from 'native-base';
 import React, { Component } from 'react';
 import { View } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome5';
+import { connect } from "react-redux";
+import { updateSubmissionDetails } from "../redux/actions";
 import styles from './styles';
+import Logout from './LogoutButton';
 
-export default class SubmissionsPage extends Component {
+class SubmissionsPage extends Component {
 
     constructor(props) {
         super(props);
         this.state = { isLoading: true }
     }
 
+    onListItemPress = (id) => {
+        console.log(id);
+        this.props.updateSubmissionDetails(id);
+        this.props.navigation.navigate('SubmissionDetails');
+    }
+
     renderRow = (submissionData) => {
         return (
-            <ListItem icon style={styles.productItem}>
+            <ListItem button onPress={() => { this.onListItemPress(submissionData.id) }} style={styles.productItem}>
                 <Body>
-                    <View style={styles.listItemView}>
-                        <View style={{ flex: 9, justifyContent: 'center' }}>
-                            <Text style={styles.productText}>
-                                {submissionData.title}
-                            </Text>
-                            <Text style={styles.nameText}>
-                                {submissionData.id}
-                            </Text>
-                        </View>
-                        <View style={{ flex: 2 }}>
-                            <Right style={{ justifyContent: 'center' }}>
-                                <Icon size={32} name="paypal" color="#555" />
-                            </Right>
+                    <View>
+                        <View>
+                            <Text style={styles.smallTitleText}>{submissionData.title}</Text>
+                            <Text style={styles.smallSubtitleText}>{submissionData.id}</Text>
                         </View>
                     </View>
                 </Body>
@@ -38,9 +37,10 @@ export default class SubmissionsPage extends Component {
 
     componentDidMount() {
         let that = this;
+        // that.props.user.content.appKey = '8876d82ca5bc5f1ded14347d80c49f4c'; // for testing purposes
         return axios.get('https://api.jotform.com/user/submissions', {
             params: {
-                apikey: "8876d82ca5bc5f1ded14347d80c49f4c"
+                apikey: this.props.user.content.appKey
             }
         })
             .then(function (response) {
@@ -69,13 +69,24 @@ export default class SubmissionsPage extends Component {
     renderLogin = () => {
         return (
             <Container>
+                <Header>
+                    <Left />
+                    <Body>
+                        <Title>Submissionss</Title>
+                        <Subtitle>Subtitle</Subtitle>
+                    </Body>
+                    <Right />
+                </Header>
                 <Content>
-                    {
-                        this.state.submissions.map(data => {
-                            return this.renderRow(data)
-                        })
-                    }
+                    <List>
+                        {
+                            this.state.submissions.map(data => {
+                                return this.renderRow(data)
+                            })
+                        }
+                    </List>
                 </Content>
+                <Logout />
             </Container>
         )
     }
@@ -86,3 +97,10 @@ export default class SubmissionsPage extends Component {
         else return this.renderLogin()
     }
 }
+
+const mapStateToProps = state => {
+    const user = state.user;
+    return { user };
+};
+
+export default connect(mapStateToProps, { updateSubmissionDetails })(SubmissionsPage);

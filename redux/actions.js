@@ -1,4 +1,4 @@
-import { LOGIN, LOGOUT, REGISTER, UPDATE_FORM_DETAILS, UPDATE_SUBMISSON_DETAILS } from "./actionTypes";
+import { LOGIN, LOGOUT, UPDATE_FORM_DETAILS, UPDATE_SUBMISSION_DETAILS } from "./actionTypes";
 
 export const login = content => ({
     type: LOGIN,
@@ -8,22 +8,19 @@ export const login = content => ({
 });
 
 export const logout = content => ({
-    type: LOGOUT,
-    payload: {
-        content
-    }
+    type: LOGOUT
 });
 
-export const updateFormDetails = content => ({
+export const updateFormDetails = formID => ({
     type: UPDATE_FORM_DETAILS,
     payload: {
-        content
+        formID
     }
 });
 
-export const updateSubmissionDetails = content => ({
-    type: UPDATE_SUBMISSON_DETAILS,
+export const updateSubmissionDetails = submissionID => ({
+    type: UPDATE_SUBMISSION_DETAILS,
     payload: {
-        content
+        submissionID
     }
 });

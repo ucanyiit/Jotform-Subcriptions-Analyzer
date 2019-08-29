@@ -1,29 +1,28 @@
 import axios from 'axios';
-import { Container, Spinner, Text } from 'native-base';
+import { Body, Button, Container, Content, Header, Icon, Left, Right, Spinner, Text, Title } from 'native-base';
 import React from 'react';
-import { View } from 'react-native';
+import { connect } from "react-redux";
 import styles from './styles';
 
-
-export default class FormDetailsPage extends React.Component {
+class FormDetailsPage extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = { isLoading: true }
+        that.setState({ isLoading: true });
     }
 
     componentDidMount() {
         let that = this;
-        return axios.get('https://api.jotform.com/user/submission', {
+        // that.props.user.content.appKey = '8876d82ca5bc5f1ded14347d80c49f4c'; // for testing purposes
+        return axios.get(`https://api.jotform.com/form/${that.props.user.formID}`, {
             params: {
-                apikey: this.props.user.content.apikey,
-                id: this.props.user.formID
+                apiKey: this.props.user.content.appKey
             }
         })
             .then(function (response) {
                 that.setState({
                     isLoading: false,
-                    submissions: response.data.content
+                    form: response.data.content
                 })
             })
             .catch(function (error) {
@@ -44,20 +43,56 @@ export default class FormDetailsPage extends React.Component {
     }
 
     renderDetails = () => {
+        console.log(this.state.form);
+        let form = this.state.form;
         return (
             <Container>
+                <Header>
+                    <Left>
+                        <Button transparent onPress={ () => this.props.navigation.goBack()}>
+                        <Icon name='arrow-back' />
+                        </Button>
+                    </Left>
+                    <Body>
+                        <Title>{form.title}</Title>
+                    </Body>
+                    <Right />
+                </Header>
                 <Content>
-                    <Text>
-                        Form FOrm FORM FOARmA SFORM
-                    </Text>
+                    <Body>
+                        <Text>
+                        //Your text here
+                        </Text>
+                        
+                    </Body>
+                    <Left>
+                        <Button transparent textStyle={{ color: '#87838B' }}>
+                            <Icon name="logo-github" />
+                            <Text note>{form.url}</Text>
+                        </Button>
+                    </Left>
                 </Content>
             </Container>
         )
     }
 
     render() {
+        console.log(this.props);
         console.log(this.state);
-        if (this.state.isLoading) return this.renderWaiting()
-        else return this.renderDetails()
+        if (this.state.isLoading) return this.renderWaiting();
+        else if (this.props.user.formID!=this.state.form.id) {
+            this.setState({
+                isLoading: true
+            });
+            return this.renderWaiting();
+        }
+        else return this.renderDetails();
     }
 }
+
+const mapStateToProps = state => {
+    const user = state.user;
+    return { user };
+};
+
+export default connect(mapStateToProps)(FormDetailsPage);

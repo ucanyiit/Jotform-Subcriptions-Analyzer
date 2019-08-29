@@ -3,28 +3,25 @@ import { LOGIN, LOGOUT, UPDATE_FORM_DETAILS, UPDATE_SUBMISSION_DETAILS } from ".
 const initialState = { loggedIn: false, content: {}, formID: "", submissionID: "" };
 
 const visibilityFilter = (state = initialState, action) => {
+    console.log(action);
     switch (action.type) {
         case LOGIN: {
             let copyState = { ...state };
             copyState.loggedIn = true;
-            copyState.content = action.payload
-            console.log("state");
-            console.log(state);
-            console.log("copystate");
-            console.log(copyState);
+            copyState.content = { ...action.payload.content };
             return copyState;
         }
         case LOGOUT: {
             return initialState
         }
-        case UPDATE_SUBMISSION_DETAILS: {
-            let copyState = { ...state };
-            copyState.formID = action.payload;
-            return copyState
-        }
         case UPDATE_FORM_DETAILS: {
             let copyState = { ...state };
-            copyState.submissionID = action.payload;
+            copyState.formID = action.payload.formID;
+            return copyState
+        }
+        case UPDATE_SUBMISSION_DETAILS: {
+            let copyState = { ...state };
+            copyState.submissionID = action.payload.submissionID;
             return copyState
         }
         default: {

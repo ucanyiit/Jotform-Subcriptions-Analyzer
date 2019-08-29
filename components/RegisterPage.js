@@ -9,7 +9,7 @@ import styles from './styles';
 export default class RegisterPage extends Component {
     constructor(props) {
         super(props);
-        this.state = { isLoading: false, error: false };
+        that.setState({ isLoading: false, error: false });
     }
 
     onRegister() {
