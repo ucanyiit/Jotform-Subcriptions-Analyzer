@@ -1,60 +1,31 @@
-import axios from 'axios';
-import { Body, Container, Content, Header, Left, List, ListItem, Right, Spinner, Subtitle, Text, Title } from 'native-base';
+import { Body, Button, Container, Content, Header, Icon, Left, List, ListItem, Right, Spinner, Subtitle, Text, Title } from 'native-base';
 import React, { Component } from 'react';
 import { View } from 'react-native';
 import { connect } from "react-redux";
-import { updateSubmissionDetails } from "../redux/actions";
-import styles from './styles';
+import { navigateTo } from "../redux/actions";
 import Logout from './LogoutButton';
+import styles from './styles';
 
 class SubmissionsPage extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { isLoading: true }
+        this.props.user.isLoading = true;
     }
 
-    onListItemPress = (id) => {
-        console.log(id);
-        this.props.updateSubmissionDetails(id);
-        this.props.navigation.navigate('SubmissionDetails');
-    }
-
-    renderRow = (submissionData) => {
+    renderRow = (submission) => {
         return (
-            <ListItem button onPress={() => { this.onListItemPress(submissionData.id) }} style={styles.productItem}>
+            <ListItem button onPress={() => { this.props.navigateTo({navigation: this.props.navigation.navigate, page: 'SubmissionDetails', id: submission.id, apikey: this.props.user.content.appKey}) }} style={styles.productItem}>
                 <Body>
                     <View>
                         <View>
-                            <Text style={styles.smallTitleText}>{submissionData.title}</Text>
-                            <Text style={styles.smallSubtitleText}>{submissionData.id}</Text>
+                            <Text style={styles.smallTitleText}>{submission.title}</Text>
+                            <Text style={styles.smallSubtitleText}>{submission.id}</Text>
                         </View>
                     </View>
                 </Body>
             </ListItem>
         );
-    }
-
-    componentDidMount() {
-        let that = this;
-        // that.props.user.content.appKey = '8876d82ca5bc5f1ded14347d80c49f4c'; // for testing purposes
-        return axios.get('https://api.jotform.com/user/submissions', {
-            params: {
-                apikey: this.props.user.content.appKey
-            }
-        })
-            .then(function (response) {
-                that.setState({
-                    isLoading: false,
-                    submissions: response.data.content
-                })
-            })
-            .catch(function (error) {
-                console.log(error);
-            })
-            .then(function () {
-                // always executed
-            });
     }
 
     renderWaiting = () => {
@@ -66,7 +37,7 @@ class SubmissionsPage extends Component {
         );
     }
 
-    renderLogin = () => {
+    renderSubmissions = () => {
         return (
             <Container>
                 <Header>
@@ -75,12 +46,16 @@ class SubmissionsPage extends Component {
                         <Title>Submissionss</Title>
                         <Subtitle>Subtitle</Subtitle>
                     </Body>
-                    <Right />
+                    <Right>
+                        <Button transparent>
+                            <Icon name='refresh' />
+                        </Button>
+                    </Right>
                 </Header>
                 <Content>
                     <List>
                         {
-                            this.state.submissions.map(data => {
+                            this.props.user.submissions && this.props.user.submissions.map(data => {
                                 return this.renderRow(data)
                             })
                         }
@@ -92,15 +67,21 @@ class SubmissionsPage extends Component {
     }
 
     render() {
-        console.log(this.state);
-        if (this.state.isLoading) return this.renderWaiting()
-        else return this.renderLogin()
+        if (this.props.user.isLoading) return this.renderWaiting()
+        else return this.renderSubmissions()
     }
 }
+
+
+const mapDispatchToProps = dispatch => {
+    return {
+        navigateTo: content => { dispatch(navigateTo(content)) }
+    };
+};
 
 const mapStateToProps = state => {
     const user = state.user;
     return { user };
 };
 
-export default connect(mapStateToProps, { updateSubmissionDetails })(SubmissionsPage);
+export default connect(mapStateToProps, mapDispatchToProps)(SubmissionsPage);

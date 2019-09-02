@@ -1,54 +1,27 @@
-import axios from 'axios';
-import { Body, Container, Content, Header, Left, List, ListItem, Right, Spinner, Subtitle, Text, Title } from 'native-base';
+import { Body, Button, Container, Content, Header, Icon, Left, List, ListItem, Right, Spinner, Subtitle, Text, Title } from 'native-base';
 import React, { Component } from 'react';
 import { View } from 'react-native';
 import { connect } from "react-redux";
-import { updateFormDetails } from "../redux/actions";
-import styles from './styles';
+import { navigateTo } from "../redux/actions";
 import Logout from './LogoutButton';
+import styles from './styles';
 
 class FormsPage extends Component {
 
     constructor(props) {
         super(props);
-        that.setState({ isLoading: true });
+        this.props.user.isLoading = true;
     }
 
-    componentDidMount() {
-        let that = this;
-        // that.props.user.content.appKey = '8876d82ca5bc5f1ded14347d80c49f4c'; // for testing purposes
-        return axios.get('https://api.jotform.com/user/forms', {
-            params: {
-                apikey: this.props.user.content.appKey
-            }
-        })
-            .then(function (response) {
-                that.setState({
-                    isLoading: false,
-                    forms: response.data.content
-                })
-            })
-            .catch(function (error) {
-                console.log(error);
-            })
-            .then(function () {
-                // always executed
-            });
-    }
-
-    onListItemPress = (id) => {
-        this.props.updateFormDetails(id);
-        this.props.navigation.navigate('FormDetails');
-    }
-
-    renderRow = (formData) => {
+    renderRow = (form) => {
+        console.log(this.props.user);
         return (
-            <ListItem button onPress={() => { this.onListItemPress(formData.id) }} style={styles.productItem}>
+            <ListItem button onPress={() => { this.props.navigateTo({ navigation: this.props.navigation.navigate, page: 'FormDetails', id: form.id, apikey: this.props.user.content.appKey }) }} style={styles.productItem}>
                 <Body>
                     <View>
                         <View>
-                            <Text style={styles.smallTitleText}>{formData.title}</Text>
-                            <Text style={styles.smallSubtitleText}>{formData.url}</Text>
+                            <Text style={styles.smallTitleText}>{form.title}</Text>
+                            <Text style={styles.smallSubtitleText}>{form.url}</Text>
                         </View>
                     </View>
                 </Body>
@@ -75,11 +48,16 @@ class FormsPage extends Component {
                         <Subtitle>Subtitle</Subtitle>
                     </Body>
                     <Right />
+                    <Right>
+                        <Button transparent>
+                            <Icon name='refresh' />
+                        </Button>
+                    </Right>
                 </Header>
                 <Content>
                     <List>
                         {
-                            this.state.forms && this.state.forms.map(data => {
+                            this.props.user.forms && this.props.user.forms.map(data => {
                                 return this.renderRow(data)
                             })
                         }
@@ -91,16 +69,21 @@ class FormsPage extends Component {
     }
 
     render() {
-        console.log(this.props);
-        console.log(this.state);
-        if (this.state.isLoading) return this.renderWaiting()
+        console.log(this.props)
+        if (this.props.user.isLoading) return this.renderWaiting()
         else return this.renderForms()
     }
 }
+
+const mapDispatchToProps = dispatch => {
+    return {
+        navigateTo: content => { dispatch(navigateTo(content)) }
+    };
+};
 
 const mapStateToProps = state => {
     const user = state.user;
     return { user };
 };
 
-export default connect(mapStateToProps, { updateFormDetails })(FormsPage);
+export default connect(mapStateToProps, mapDispatchToProps)(FormsPage);

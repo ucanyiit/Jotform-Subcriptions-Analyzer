@@ -1,26 +1,26 @@
 import React from 'react';
 import { createAppContainer, createDrawerNavigator } from 'react-navigation';
 import { Provider } from 'react-redux';
-import { createStore } from 'redux';
+import { createStore, applyMiddleware  } from 'redux';
 import reducers from './redux/reducers';
 import { FormDetailsPage, FormsPage, HomePage, LoginPage, RegisterPage, SubmissionDetailsPage, SubmissionsPage } from './components/pages';
+import thunk from 'redux-thunk';
 
 const RootStack = createDrawerNavigator({
     FormDetails: FormDetailsPage,
     Forms: FormsPage,
-    Home: HomePage,
     Login: LoginPage,
     Register: RegisterPage,
     SubmissionDetails: SubmissionDetailsPage,
     Submissions: SubmissionsPage
 },
     {
-        initialRouteName: 'Home'
+        initialRouteName: 'Login'
     }
 );
 
 const AppContainer = createAppContainer(RootStack);
-const store = createStore(reducers)
+const store = createStore(reducers, applyMiddleware(thunk));
 
 export default class App extends React.Component {
     render() {

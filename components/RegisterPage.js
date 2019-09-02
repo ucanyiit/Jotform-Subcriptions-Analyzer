@@ -1,34 +1,14 @@
-import axios from 'axios';
 import { Button, Container, Form, Input, Item, Spinner, Text } from 'native-base';
-import qs from 'qs';
 import React, { Component } from 'react';
 import { View } from 'react-native';
+import { connect } from "react-redux";
+import { registerRequest, navigateTo } from "../redux/actions";
 import styles from './styles';
 
-
-export default class RegisterPage extends Component {
+class RegisterPage extends Component {
     constructor(props) {
         super(props);
-        that.setState({ isLoading: false, error: false });
-    }
-
-    onRegister() {
-        const that = this;
-        const { username, password, email } = that.state;
-        that.setState({ isLoading: true });
-        axios.post('https://api.jotform.com/user/register', qs.stringify({ username, password, email }))
-            .then(function (response) {
-                console.log(response);
-                that.setState({ isLoading: false, error: false });
-                that.props.navigation.navigate('Login');
-            })
-            .catch(function (error) {
-                console.log(error);
-                that.setState({ isLoading: false, error: true });
-            })
-            .then(function () {
-                // always executed
-            });
+        this.state = {};
     }
 
     renderWaiting = () => {
@@ -44,8 +24,8 @@ export default class RegisterPage extends Component {
         return (
             <Container>
                 <View style={styles.inputItem}>
-                    {this.state.error && <Text style={styles.errorText}>Failed to register, please check your inputs.</Text>}
-                    {!this.state.error && <Text style={styles.pleaseText}>Register please.</Text>}
+                    {this.props.user.error && <Text style={styles.errorText}>Failed to register, please check your inputs.</Text>}
+                    {!this.props.user.error && <Text style={styles.pleaseText}>Register please.</Text>}
                 </View>
                 <Form>
                     <Item style={styles.inputItem}>
@@ -65,10 +45,10 @@ export default class RegisterPage extends Component {
                             onChangeText={(email) => this.setState({ email })} />
                     </Item>
                 </Form>
-                <Button style={styles.button} onPress={() => this.onRegister()}>
+                <Button style={styles.button} onPress={() => this.props.registerRequest({ username: this.state.username, password: this.state.password, email: this.state.email })}>
                     <Text>Register</Text>
                 </Button>
-                <Button style={styles.button} bordered onPress={() => this.props.navigation.navigate('Login')}>
+                <Button style={styles.button} bordered onPress={() => this.props.navigateTo({ navigation: this.props.navigation.navigate, page: 'Login' })}>
                     <Text>Have an account? Login instead</Text>
                 </Button>
             </Container>
@@ -77,7 +57,22 @@ export default class RegisterPage extends Component {
 
     render() {
         console.log(this.state);
-        if (this.state.isLoading) return this.renderWaiting()
+        if (this.props.user.isLoading) return this.renderWaiting()
         else return this.renderRegister()
     }
 }
+
+
+const mapDispatchToProps = dispatch => {
+    return {
+        registerRequest: credentials => { dispatch(registerRequest(credentials)) },
+        navigateTo: content => { dispatch(navigateTo(content)) }
+    };
+};
+
+const mapStateToProps = state => {
+    const user = state.user;
+    return { user };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(RegisterPage);
