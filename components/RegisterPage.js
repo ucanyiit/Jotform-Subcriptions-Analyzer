@@ -56,23 +56,21 @@ class RegisterPage extends Component {
     }
 
     render() {
-        console.log(this.state);
         if (this.props.user.isLoading) return this.renderWaiting()
         else return this.renderRegister()
     }
 }
 
+const mapStateToProps = state => {
+    const user = state.user;
+    return { user };
+};
 
 const mapDispatchToProps = dispatch => {
     return {
         registerRequest: credentials => { dispatch(registerRequest(credentials)) },
         navigateTo: content => { dispatch(navigateTo(content)) }
     };
-};
-
-const mapStateToProps = state => {
-    const user = state.user;
-    return { user };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(RegisterPage);

@@ -2,7 +2,7 @@ import { Body, Button, Container, Content, Header, Icon, Left, List, ListItem, R
 import React, { Component } from 'react';
 import { View } from 'react-native';
 import { connect } from "react-redux";
-import { navigateTo } from "../redux/actions";
+import { navigateTo, submissonsRequest } from "../redux/actions";
 import Logout from './LogoutButton';
 import styles from './styles';
 
@@ -10,12 +10,12 @@ class SubmissionsPage extends Component {
 
     constructor(props) {
         super(props);
-        this.props.user.isLoading = true;
+        this.props.submissonsRequest(this.props.user.content.appKey);
     }
 
     renderRow = (submission) => {
         return (
-            <ListItem button onPress={() => { this.props.navigateTo({navigation: this.props.navigation.navigate, page: 'SubmissionDetails', id: submission.id, apikey: this.props.user.content.appKey}) }} style={styles.productItem}>
+            <ListItem button onPress={() => { this.props.navigateTo({ navigation: this.props.navigation.navigate, page: 'SubmissionDetails', id: submission.id }) }} style={styles.productItem}>
                 <Body>
                     <View>
                         <View>
@@ -54,11 +54,7 @@ class SubmissionsPage extends Component {
                 </Header>
                 <Content>
                     <List>
-                        {
-                            this.props.user.submissions && this.props.user.submissions.map(data => {
-                                return this.renderRow(data)
-                            })
-                        }
+                        {this.props.user.submissions && this.props.user.submissions.map(data => { return this.renderRow(data) })}
                     </List>
                 </Content>
                 <Logout />
@@ -72,16 +68,16 @@ class SubmissionsPage extends Component {
     }
 }
 
-
-const mapDispatchToProps = dispatch => {
-    return {
-        navigateTo: content => { dispatch(navigateTo(content)) }
-    };
-};
-
 const mapStateToProps = state => {
     const user = state.user;
     return { user };
+};
+
+const mapDispatchToProps = dispatch => {
+    return {
+        submissonsRequest: content => { dispatch(submissonsRequest(content)) },
+        navigateTo: content => { dispatch(navigateTo(content)) }
+    };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(SubmissionsPage);

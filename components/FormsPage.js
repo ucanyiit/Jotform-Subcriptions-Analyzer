@@ -2,7 +2,7 @@ import { Body, Button, Container, Content, Header, Icon, Left, List, ListItem, R
 import React, { Component } from 'react';
 import { View } from 'react-native';
 import { connect } from "react-redux";
-import { navigateTo } from "../redux/actions";
+import { formsRequest, navigateTo } from "../redux/actions";
 import Logout from './LogoutButton';
 import styles from './styles';
 
@@ -10,13 +10,12 @@ class FormsPage extends Component {
 
     constructor(props) {
         super(props);
-        this.props.user.isLoading = true;
+        this.props.formsRequest(this.props.user.content.appKey);
     }
-
+    
     renderRow = (form) => {
-        console.log(this.props.user);
         return (
-            <ListItem button onPress={() => { this.props.navigateTo({ navigation: this.props.navigation.navigate, page: 'FormDetails', id: form.id, apikey: this.props.user.content.appKey }) }} style={styles.productItem}>
+            <ListItem button onPress={() => { this.props.navigateTo({ navigation: this.props.navigation.navigate, page: 'FormDetails', id: form.id }) }} style={styles.productItem}>
                 <Body>
                     <View>
                         <View>
@@ -28,7 +27,7 @@ class FormsPage extends Component {
             </ListItem>
         );
     }
-
+    
     renderWaiting = () => {
         return (
             <Container style={styles.inputItem}>
@@ -56,11 +55,7 @@ class FormsPage extends Component {
                 </Header>
                 <Content>
                     <List>
-                        {
-                            this.props.user.forms && this.props.user.forms.map(data => {
-                                return this.renderRow(data)
-                            })
-                        }
+                        {this.props.user.forms && this.props.user.forms.map(data => { return this.renderRow(data) })}
                     </List>
                 </Content>
                 <Logout />
@@ -69,21 +64,21 @@ class FormsPage extends Component {
     }
 
     render() {
-        console.log(this.props)
         if (this.props.user.isLoading) return this.renderWaiting()
         else return this.renderForms()
     }
 }
 
-const mapDispatchToProps = dispatch => {
-    return {
-        navigateTo: content => { dispatch(navigateTo(content)) }
-    };
-};
-
 const mapStateToProps = state => {
     const user = state.user;
     return { user };
+};
+
+const mapDispatchToProps = dispatch => {
+    return {
+        formsRequest: content => { dispatch(formsRequest(content)) },
+        navigateTo: content => { dispatch(navigateTo(content)) }
+    };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(FormsPage);

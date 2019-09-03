@@ -7,8 +7,7 @@ export const loginRequest = ({ username, password, navigation }) => dispatch => 
     axios.post('https://api.jotform.com/user/login', qs.stringify({ username, password, access: 'full', appName: 'ucanyiit' }))
         .then((res) => {
             dispatch(loginSuccess(res.data.content));
-            console.log(res);
-            dispatch(navigateTo({ navigation, page: "Forms", apikey: res.data.content.appKey }));
+            dispatch(navigateTo({ navigation, page: "Forms"}));
         })
         .catch((err) => { dispatch(requestFailure(err)) })
 };
@@ -27,49 +26,51 @@ export const registerRequest = ({ username, password, email }) => dispatch => {
         .catch(err => { dispatch(requestFailure(err)) })
 };
 
-export const navigateTo = ({ navigation, page, id, apikey }) => dispatch => {
+export const navigateTo = ({ navigation, page, id }) => dispatch => {
     switch (page) {
-        case "Forms": {
-            dispatch(requestStarted());
-            navigation(page);
-            axios.get('https://api.jotform.com/user/forms', { params: { apikey } })
-                .then(res => { dispatch(getFormsSuccess(res.data.content)) })
-                .catch(err => { dispatch(requestFailure(err)) })
-            break;
-        }
-        case "Submissions": {
-            dispatch(requestStarted());
-            navigation(page);
-            axios.get('https://api.jotform.com/user/submissions', { params: { apikey } })
-                .then(res => { dispatch(getSubmissionsSuccess(res.data.content)) })
-                .catch(err => { dispatch(requestFailure(err)) })
-            break;
-        }
         case "FormDetails": {
-            dispatch(requestStarted());
-            navigation(page);
-            console.log(apikey);
-            console.log(id);
-            axios.get(`https://api.jotform.com/form/${id}`, { params: { apikey } })
-                .then(res => { dispatch(updateFormDetails(res.data.content)) })
-                .catch(err => { dispatch(requestFailure(err)) })
+            dispatch(updateFormDetails(id));
             break;
         }
         case "SubmissionDetails": {
-            dispatch(requestStarted());
-            navigation(page);
-            axios.get(`https://api.jotform.com/submission/${id}`, { params: { apikey } })
-                .then(res => { dispatch(updateSubmissionDetails(res.data.content)) })
-                .catch(err => { dispatch(requestFailure(err)) })
+            dispatch(updateSubmissionDetails(id));
             break;
         }
-        default: {
-            navigation(page);
-            dispatch(refreshErrors());
-        }
-
     }
+    navigation(page);
+    dispatch(refreshErrors());
 }
+
+export const formDetailsRequest = (id, apikey) => dispatch => {
+    dispatch(requestStarted());
+    console.log(id);
+    console.log(apikey);
+    axios.get(`https://api.jotform.com/form/${id}`, { params: { apikey } })
+        .then(res => { dispatch(updateFormDetails(res.data.content)) })
+        .catch(err => { dispatch(requestFailure(err)) })
+}
+
+export const formsRequest = apikey => dispatch => {
+    dispatch(requestStarted());
+    axios.get('https://api.jotform.com/user/forms', { params: { apikey } })
+        .then(res => { dispatch(getFormsSuccess(res.data.content)) })
+        .catch(err => { dispatch(requestFailure(err)) })
+}
+
+export const submissionDetailsRequest = (id, apikey) => dispatch => {
+    dispatch(requestStarted());
+    axios.get(`https://api.jotform.com/submission/${id}`, { params: { apikey } })
+        .then(res => { dispatch(updateSubmissionDetails(res.data.content)) })
+        .catch(err => { dispatch(requestFailure(err)) })
+}
+
+export const submissonsRequest = apikey => dispatch => {
+    dispatch(requestStarted());
+    axios.get('https://api.jotform.com/user/submissions', { params: { apikey } })
+        .then(res => { dispatch(getSubmissionsSuccess(res.data.content)) })
+        .catch(err => { dispatch(requestFailure(err)) })
+}
+
 
 const updateFormDetails = content => ({
     type: UPDATE_FORM_DETAILS,

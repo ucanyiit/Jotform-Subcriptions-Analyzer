@@ -58,16 +58,16 @@ class LoginPage extends Component {
     }
 }
 
+const mapStateToProps = state => {
+    const user = state.user;
+    return { user };
+};
+
 const mapDispatchToProps = dispatch => {
     return {
         loginRequest: credentials => { dispatch(loginRequest(credentials)) },
         navigateTo: content => { dispatch(navigateTo(content)) }
     };
-};
-
-const mapStateToProps = state => {
-    const user = state.user;
-    return { user };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(LoginPage);

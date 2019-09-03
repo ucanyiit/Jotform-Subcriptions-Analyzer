@@ -1,13 +1,14 @@
 import { Body, Button, Container, Content, Header, Icon, Left, Right, Spinner, Text, Title } from 'native-base';
 import React from 'react';
 import { connect } from "react-redux";
+import { formDetailsRequest } from "../redux/actions";
 import styles from './styles';
 
 class FormDetailsPage extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {};
+        if (typeof (this.props.user.form) === "string") this.props.formDetailsRequest(this.props.user.form, this.props.user.content.appKey);
     }
 
     renderWaiting = () => {
@@ -63,4 +64,10 @@ const mapStateToProps = state => {
     return { user };
 };
 
-export default connect(mapStateToProps)(FormDetailsPage);
+const mapDispatchToProps = dispatch => {
+    return {
+        formDetailsRequest: (id, apikey) => { dispatch(formDetailsRequest(id, apikey)) }
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(FormDetailsPage);

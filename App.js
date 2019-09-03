@@ -3,7 +3,7 @@ import { createAppContainer, createDrawerNavigator } from 'react-navigation';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware  } from 'redux';
 import reducers from './redux/reducers';
-import { FormDetailsPage, FormsPage, HomePage, LoginPage, RegisterPage, SubmissionDetailsPage, SubmissionsPage } from './components/pages';
+import { FormDetailsPage, FormsPage, LoginPage, RegisterPage, SubmissionDetailsPage, SubmissionsPage } from './components/pages';
 import thunk from 'redux-thunk';
 
 const RootStack = createDrawerNavigator({

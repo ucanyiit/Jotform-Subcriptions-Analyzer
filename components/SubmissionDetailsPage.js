@@ -1,6 +1,7 @@
 import { Body, Button, Container, Content, Header, Icon, Left, Right, Spinner, Text, Title } from 'native-base';
 import React from 'react';
 import { connect } from "react-redux";
+import { submissionDetailsRequest } from "../redux/actions";
 import styles from './styles';
 
 
@@ -8,7 +9,7 @@ class SubmissionDetailsPage extends React.Component {
 
     constructor(props) {
         super(props);
-        this.props.user.isLoading = true;
+        if (typeof (this.props.user.submission) === "string") this.props.submissionDetailsRequest(this.props.user.submission, this.props.user.content.appKey);
     }
 
     renderWaiting = () => {
@@ -22,7 +23,6 @@ class SubmissionDetailsPage extends React.Component {
 
     renderDetails = () => {
         let submission = this.props.user.submission;
-        console.log(submission)
         return (
             <Container>
                 <Header>
@@ -65,4 +65,10 @@ const mapStateToProps = state => {
     return { user };
 };
 
-export default connect(mapStateToProps)(SubmissionDetailsPage);
+const mapDispatchToProps = dispatch => {
+    return {
+        submissionDetailsRequest: (id, apikey) => { dispatch(submissionDetailsRequest(id, apikey)) }
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(SubmissionDetailsPage);
