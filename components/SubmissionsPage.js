@@ -1,16 +1,18 @@
-import { Body, Button, Container, Content, Header, Icon, Left, List, ListItem, Right, Spinner, Subtitle, Text, Title } from 'native-base';
+import { Body, Button, Container, Content, Header, Icon, Left, List, ListItem, Right, Subtitle, Text, Title } from 'native-base';
 import React, { Component } from 'react';
 import { View } from 'react-native';
 import { connect } from "react-redux";
 import { navigateTo, submissonsRequest } from "../redux/actions";
 import Logout from './LogoutButton';
 import styles from './styles';
+import WaitingPage from './WaitingPage';
 
 class SubmissionsPage extends Component {
 
     constructor(props) {
         super(props);
-        this.props.submissonsRequest(this.props.user.content.appKey);
+        if (!this.props.user.loggedIn) this.props.navigateTo({ navigation: this.props.navigation.navigate, page: 'Login' });
+        else this.props.submissonsRequest();
     }
 
     renderRow = (submission) => {
@@ -25,15 +27,6 @@ class SubmissionsPage extends Component {
                     </View>
                 </Body>
             </ListItem>
-        );
-    }
-
-    renderWaiting = () => {
-        return (
-            <Container style={styles.inputItem}>
-                <Text style={styles.pleaseText}>Waiting for response...</Text>
-                <Spinner />
-            </Container>
         );
     }
 
@@ -63,7 +56,7 @@ class SubmissionsPage extends Component {
     }
 
     render() {
-        if (this.props.user.isLoading) return this.renderWaiting()
+        if (this.props.user.isLoading) return <WaitingPage />
         else return this.renderSubmissions()
     }
 }
@@ -75,7 +68,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        submissonsRequest: content => { dispatch(submissonsRequest(content)) },
+        submissonsRequest: () => { dispatch(submissonsRequest()) },
         navigateTo: content => { dispatch(navigateTo(content)) }
     };
 };

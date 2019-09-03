@@ -41,32 +41,31 @@ export const navigateTo = ({ navigation, page, id }) => dispatch => {
     dispatch(refreshErrors());
 }
 
-export const formDetailsRequest = (id, apikey) => dispatch => {
+export const formDetailsRequest = id => (dispatch, getState) => {
     dispatch(requestStarted());
-    console.log(id);
-    console.log(apikey);
-    axios.get(`https://api.jotform.com/form/${id}`, { params: { apikey } })
+    axios.get(`https://api.jotform.com/form/${id}`, { params: { apikey: {...getState().user}.content.appKey } })
         .then(res => { dispatch(updateFormDetails(res.data.content)) })
         .catch(err => { dispatch(requestFailure(err)) })
 }
 
-export const formsRequest = apikey => dispatch => {
+export const formsRequest = () => (dispatch, getState) => {
     dispatch(requestStarted());
-    axios.get('https://api.jotform.com/user/forms', { params: { apikey } })
+    console.log(getState().user.content.appKey);
+    axios.get('https://api.jotform.com/user/forms', { params: { apikey: {...getState().user}.content.appKey } })
         .then(res => { dispatch(getFormsSuccess(res.data.content)) })
         .catch(err => { dispatch(requestFailure(err)) })
 }
 
-export const submissionDetailsRequest = (id, apikey) => dispatch => {
+export const submissionDetailsRequest = id => (dispatch, getState) => {
     dispatch(requestStarted());
-    axios.get(`https://api.jotform.com/submission/${id}`, { params: { apikey } })
+    axios.get(`https://api.jotform.com/submission/${id}`, { params: { apikey: {...getState().user}.content.appKey } })
         .then(res => { dispatch(updateSubmissionDetails(res.data.content)) })
         .catch(err => { dispatch(requestFailure(err)) })
 }
 
-export const submissonsRequest = apikey => dispatch => {
+export const submissonsRequest = () => (dispatch, getState) => {
     dispatch(requestStarted());
-    axios.get('https://api.jotform.com/user/submissions', { params: { apikey } })
+    axios.get('https://api.jotform.com/user/submissions', { params: { apikey: {...getState().user}.content.appKey } })
         .then(res => { dispatch(getSubmissionsSuccess(res.data.content)) })
         .catch(err => { dispatch(requestFailure(err)) })
 }

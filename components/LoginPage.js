@@ -1,25 +1,18 @@
-import { Button, Container, Content, Form, Input, Item, Spinner, Text } from 'native-base';
+import { Button, Container, Content, Form, Input, Item, Text } from 'native-base';
 import React, { Component } from 'react';
 import { View } from 'react-native';
 import { connect } from "react-redux";
 import { loginRequest, navigateTo } from "../redux/actions";
 import styles from './styles';
+import WaitingPage from './WaitingPage';
 
 class LoginPage extends Component {
     constructor(props) {
         super(props);
         this.state = {}
+        if (this.props.user.loggedIn) this.props.navigateTo({ navigation: this.props.navigation.navigate, page: 'Forms' });
     }
-    
-    renderWaiting = () => {
-        return (
-            <Container style={styles.inputItem}>
-                <Text style={styles.pleaseText}>Waiting for response...</Text>
-                <Spinner />
-            </Container>
-        );
-    }
-    
+
     renderLogin = () => {
         return (
             <Container>
@@ -41,7 +34,7 @@ class LoginPage extends Component {
                                 onChangeText={(password) => this.setState({ password })} />
                         </Item>
                     </Form>
-                    <Button style={styles.button} block onPress={() => this.props.loginRequest({ username: this.state.username, password: this.state.password, navigation: this.props.navigation.navigate})}>
+                    <Button style={styles.button} block onPress={() => this.props.loginRequest({ username: this.state.username, password: this.state.password, navigation: this.props.navigation.navigate })}>
                         <Text>Login</Text>
                     </Button>
                     <Button style={styles.button} block bordered onPress={() => this.props.navigateTo({ navigation: this.props.navigation.navigate, page: 'Register' })}>
@@ -51,9 +44,9 @@ class LoginPage extends Component {
             </Container>
         )
     }
-    
+
     render() {
-        if (this.props.user.isLoading) return this.renderWaiting()
+        if (this.props.user.isLoading) return <WaitingPage />
         else return this.renderLogin()
     }
 }

@@ -1,23 +1,16 @@
-import { Button, Container, Form, Input, Item, Spinner, Text } from 'native-base';
+import { Button, Container, Form, Input, Item, Text } from 'native-base';
 import React, { Component } from 'react';
 import { View } from 'react-native';
 import { connect } from "react-redux";
-import { registerRequest, navigateTo } from "../redux/actions";
+import { navigateTo, registerRequest } from "../redux/actions";
 import styles from './styles';
+import WaitingPage from './WaitingPage';
 
 class RegisterPage extends Component {
     constructor(props) {
         super(props);
         this.state = {};
-    }
-
-    renderWaiting = () => {
-        return (
-            <Container style={styles.inputItem}>
-                <Text style={styles.pleaseText}>Waiting for response...</Text>
-                <Spinner />
-            </Container>
-        );
+        if (this.props.user.loggedIn) this.props.navigateTo({ navigation: this.props.navigation.navigate, page: 'Forms' });
     }
 
     renderRegister = () => {
@@ -56,7 +49,7 @@ class RegisterPage extends Component {
     }
 
     render() {
-        if (this.props.user.isLoading) return this.renderWaiting()
+        if (this.props.user.isLoading) return <WaitingPage />
         else return this.renderRegister()
     }
 }

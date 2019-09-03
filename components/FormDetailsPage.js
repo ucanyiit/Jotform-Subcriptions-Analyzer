@@ -1,23 +1,15 @@
-import { Body, Button, Container, Content, Header, Icon, Left, Right, Spinner, Text, Title } from 'native-base';
+import { Body, Button, Container, Content, Header, Icon, Left, Right, Text, Title } from 'native-base';
 import React from 'react';
 import { connect } from "react-redux";
 import { formDetailsRequest } from "../redux/actions";
-import styles from './styles';
+import WaitingPage from './WaitingPage';
 
 class FormDetailsPage extends React.Component {
 
     constructor(props) {
         super(props);
-        if (typeof (this.props.user.form) === "string") this.props.formDetailsRequest(this.props.user.form, this.props.user.content.appKey);
-    }
-
-    renderWaiting = () => {
-        return (
-            <Container style={styles.inputItem}>
-                <Text style={styles.pleaseText}>Waiting for response...</Text>
-                <Spinner />
-            </Container>
-        );
+        if (!this.props.user.loggedIn) this.props.navigateTo({ navigation: this.props.navigation.navigate, page: 'Login' });
+        else if (typeof (this.props.user.form) === "string") this.props.formDetailsRequest(this.props.user.form);
     }
 
     renderDetails = () => {
@@ -54,7 +46,7 @@ class FormDetailsPage extends React.Component {
     }
 
     render() {
-        if (this.props.user.isLoading) return this.renderWaiting();
+        if (this.props.user.isLoading) return <WaitingPage />
         else return this.renderDetails();
     }
 }
@@ -66,7 +58,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        formDetailsRequest: (id, apikey) => { dispatch(formDetailsRequest(id, apikey)) }
+        formDetailsRequest: id => { dispatch(formDetailsRequest(id)) }
     };
 };
 

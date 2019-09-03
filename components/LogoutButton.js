@@ -4,7 +4,6 @@ import { connect } from "react-redux";
 import styles from './styles';
 import { logoutRequest } from "../redux/actions";
 
-
 class LogoutButton extends Component {
     render() {
         return (

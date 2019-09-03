@@ -1,18 +1,20 @@
-import { Body, Button, Container, Content, Header, Icon, Left, List, ListItem, Right, Spinner, Subtitle, Text, Title } from 'native-base';
+import { Body, Button, Container, Content, Header, Icon, Left, List, ListItem, Right, Subtitle, Text, Title } from 'native-base';
 import React, { Component } from 'react';
 import { View } from 'react-native';
 import { connect } from "react-redux";
 import { formsRequest, navigateTo } from "../redux/actions";
 import Logout from './LogoutButton';
 import styles from './styles';
+import WaitingPage from './WaitingPage';
 
 class FormsPage extends Component {
 
     constructor(props) {
         super(props);
-        this.props.formsRequest(this.props.user.content.appKey);
+        if (!this.props.user.loggedIn) this.props.navigateTo({ navigation: this.props.navigation.navigate, page: 'Login' });
+        else this.props.formsRequest();
     }
-    
+
     renderRow = (form) => {
         return (
             <ListItem button onPress={() => { this.props.navigateTo({ navigation: this.props.navigation.navigate, page: 'FormDetails', id: form.id }) }} style={styles.productItem}>
@@ -25,15 +27,6 @@ class FormsPage extends Component {
                     </View>
                 </Body>
             </ListItem>
-        );
-    }
-    
-    renderWaiting = () => {
-        return (
-            <Container style={styles.inputItem}>
-                <Text style={styles.pleaseText}>Waiting for response...</Text>
-                <Spinner />
-            </Container>
         );
     }
 
@@ -64,7 +57,7 @@ class FormsPage extends Component {
     }
 
     render() {
-        if (this.props.user.isLoading) return this.renderWaiting()
+        if (this.props.user.isLoading) return <WaitingPage />
         else return this.renderForms()
     }
 }
@@ -76,7 +69,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        formsRequest: content => { dispatch(formsRequest(content)) },
+        formsRequest: () => { dispatch(formsRequest()) },
         navigateTo: content => { dispatch(navigateTo(content)) }
     };
 };
