@@ -5,19 +5,19 @@ import { connect } from "react-redux";
 import { formsRequest, navigateTo } from "../redux/actions";
 import Logout from './LogoutButton';
 import styles from './styles';
-import WaitingPage from './WaitingPage';
+import { WaitingPage } from './pages';
 
 class FormsPage extends Component {
 
     constructor(props) {
         super(props);
-        if (!this.props.user.loggedIn) this.props.navigateTo({ navigation: this.props.navigation.navigate, page: 'Login' });
+        if (!this.props.user.loggedIn) this.props.navigateTo({ page: 'Login' });
         else this.props.formsRequest();
     }
 
     renderRow = (form) => {
         return (
-            <ListItem button onPress={() => { this.props.navigateTo({ navigation: this.props.navigation.navigate, page: 'FormDetails', id: form.id }) }} style={styles.productItem}>
+            <ListItem button onPress={() => { this.props.navigateTo({ page: 'FormDetails', id: form.id }) }} style={styles.productItem}>
                 <Body>
                     <View>
                         <View>
@@ -31,6 +31,15 @@ class FormsPage extends Component {
     }
 
     renderForms = () => {
+        return (<List>
+            {this.props.user.forms && this.props.user.forms.map(data => { return this.renderRow(data) })}
+        </List>)
+    }
+
+    render() {
+        let content;
+        if (this.props.user.isLoading) content = <WaitingPage />
+        else content = this.renderForms();
         return (
             <Container>
                 <Header>
@@ -39,7 +48,6 @@ class FormsPage extends Component {
                         <Title>Forms</Title>
                         <Subtitle>Subtitle</Subtitle>
                     </Body>
-                    <Right />
                     <Right>
                         <Button transparent>
                             <Icon name='refresh' />
@@ -47,18 +55,11 @@ class FormsPage extends Component {
                     </Right>
                 </Header>
                 <Content>
-                    <List>
-                        {this.props.user.forms && this.props.user.forms.map(data => { return this.renderRow(data) })}
-                    </List>
+                    {content}
                 </Content>
                 <Logout />
             </Container>
         )
-    }
-
-    render() {
-        if (this.props.user.isLoading) return <WaitingPage />
-        else return this.renderForms()
     }
 }
 

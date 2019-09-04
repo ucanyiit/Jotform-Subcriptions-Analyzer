@@ -11,13 +11,13 @@ class SubmissionsPage extends Component {
 
     constructor(props) {
         super(props);
-        if (!this.props.user.loggedIn) this.props.navigateTo({ navigation: this.props.navigation.navigate, page: 'Login' });
+        if (!this.props.user.loggedIn) this.props.navigateTo({ page: 'Login' });
         else this.props.submissonsRequest();
     }
 
     renderRow = (submission) => {
         return (
-            <ListItem button onPress={() => { this.props.navigateTo({ navigation: this.props.navigation.navigate, page: 'SubmissionDetails', id: submission.id }) }} style={styles.productItem}>
+            <ListItem button onPress={() => { this.props.navigateTo({ page: 'SubmissionDetails', id: submission.id }) }} style={styles.productItem}>
                 <Body>
                     <View>
                         <View>
@@ -31,12 +31,21 @@ class SubmissionsPage extends Component {
     }
 
     renderSubmissions = () => {
+        return (<List>
+            {this.props.user.submissions && this.props.user.submissions.map(data => { return this.renderRow(data) })}
+        </List>)
+    }
+
+    render() {
+        let content;
+        if (this.props.user.isLoading) content = <WaitingPage />
+        else content = this.renderSubmissions();
         return (
             <Container>
                 <Header>
                     <Left />
                     <Body>
-                        <Title>Submissionss</Title>
+                        <Title>Submissions</Title>
                         <Subtitle>Subtitle</Subtitle>
                     </Body>
                     <Right>
@@ -46,19 +55,13 @@ class SubmissionsPage extends Component {
                     </Right>
                 </Header>
                 <Content>
-                    <List>
-                        {this.props.user.submissions && this.props.user.submissions.map(data => { return this.renderRow(data) })}
-                    </List>
+                    {content}
                 </Content>
                 <Logout />
             </Container>
         )
     }
 
-    render() {
-        if (this.props.user.isLoading) return <WaitingPage />
-        else return this.renderSubmissions()
-    }
 }
 
 const mapStateToProps = state => {

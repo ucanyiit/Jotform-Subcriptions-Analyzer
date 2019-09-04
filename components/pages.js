@@ -4,5 +4,7 @@ import LoginPage from './LoginPage';
 import RegisterPage from './RegisterPage';
 import SubmissionDetailsPage from './SubmissionDetailsPage';
 import SubmissionsPage from './SubmissionsPage';
+import WaitingPage from './WaitingPage';
 
-export { FormDetailsPage, FormsPage, LoginPage, RegisterPage, SubmissionDetailsPage, SubmissionsPage };
+export { FormDetailsPage, FormsPage, LoginPage, RegisterPage, SubmissionDetailsPage, SubmissionsPage, WaitingPage };
+

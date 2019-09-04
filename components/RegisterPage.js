@@ -10,7 +10,7 @@ class RegisterPage extends Component {
     constructor(props) {
         super(props);
         this.state = {};
-        if (this.props.user.loggedIn) this.props.navigateTo({ navigation: this.props.navigation.navigate, page: 'Forms' });
+        if (this.props.user.loggedIn) this.props.navigateTo({ page: 'Forms' });
     }
 
     renderRegister = () => {
@@ -41,7 +41,7 @@ class RegisterPage extends Component {
                 <Button style={styles.button} onPress={() => this.props.registerRequest({ username: this.state.username, password: this.state.password, email: this.state.email })}>
                     <Text>Register</Text>
                 </Button>
-                <Button style={styles.button} bordered onPress={() => this.props.navigateTo({ navigation: this.props.navigation.navigate, page: 'Login' })}>
+                <Button style={styles.button} bordered onPress={() => this.props.navigateTo({ page: 'Login' })}>
                     <Text>Have an account? Login instead</Text>
                 </Button>
             </Container>

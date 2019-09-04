@@ -1,14 +1,14 @@
 import { Body, Button, Container, Content, Header, Icon, Left, Right, Text, Title } from 'native-base';
 import React from 'react';
 import { connect } from "react-redux";
-import { formDetailsRequest } from "../redux/actions";
+import { formDetailsRequest, navigateTo } from "../redux/actions";
 import WaitingPage from './WaitingPage';
 
 class FormDetailsPage extends React.Component {
 
     constructor(props) {
         super(props);
-        if (!this.props.user.loggedIn) this.props.navigateTo({ navigation: this.props.navigation.navigate, page: 'Login' });
+        if (!this.props.user.loggedIn) this.props.navigateTo({ page: 'Login' });
         else if (typeof (this.props.user.form) === "string") this.props.formDetailsRequest(this.props.user.form);
     }
 
@@ -58,7 +58,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        formDetailsRequest: id => { dispatch(formDetailsRequest(id)) }
+        formDetailsRequest: id => { dispatch(formDetailsRequest(id)) },
+        navigateTo: content => { dispatch(navigateTo(content)) }
     };
 };
 

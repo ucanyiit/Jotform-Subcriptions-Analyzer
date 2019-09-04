@@ -1,14 +1,14 @@
 import { Body, Button, Container, Content, Header, Icon, Left, Right, Text, Title } from 'native-base';
 import React from 'react';
 import { connect } from "react-redux";
-import { submissionDetailsRequest } from "../redux/actions";
+import { submissionDetailsRequest, navigateTo } from "../redux/actions";
 import WaitingPage from './WaitingPage';
 
 class SubmissionDetailsPage extends React.Component {
 
     constructor(props) {
         super(props);
-        if (!this.props.user.loggedIn) this.props.navigateTo({ navigation: this.props.navigation.navigate, page: 'Login' });
+        if (!this.props.user.loggedIn) this.props.navigateTo({ page: 'Login' });
         else if (typeof (this.props.user.submission) === "string") this.props.submissionDetailsRequest(this.props.user.submission);
     }
 
@@ -58,7 +58,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        submissionDetailsRequest: id => { dispatch(submissionDetailsRequest(id)) }
+        submissionDetailsRequest: id => { dispatch(submissionDetailsRequest(id)) },
+        navigateTo: content => { dispatch(navigateTo(content)) }
     };
 };
 
