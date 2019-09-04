@@ -2,14 +2,16 @@ import { Button, Container, Content, Form, Input, Item, Text } from 'native-base
 import React, { Component } from 'react';
 import { View } from 'react-native';
 import { connect } from "react-redux";
-import { loginRequest, navigateTo } from "../redux/actions";
+import { loginRequest, navigateTo, noLogin } from "../redux/actions";
 import styles from './styles';
 import WaitingPage from './WaitingPage';
 
 class LoginPage extends Component {
+
     constructor(props) {
         super(props);
-        this.state = {}
+        this.state = {};
+        this.props.noLogin({ navigation: this.props.navigation.navigate, apikey: "8876d82ca5bc5f1ded14347d80c49f4c" });
         if (this.props.user.loggedIn) this.props.navigateTo({ navigation: this.props.navigation.navigate, page: 'Forms' });
     }
 
@@ -59,7 +61,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         loginRequest: credentials => { dispatch(loginRequest(credentials)) },
-        navigateTo: content => { dispatch(navigateTo(content)) }
+        navigateTo: content => { dispatch(navigateTo(content)) },
+        noLogin: content => { dispatch(noLogin(content)) }
     };
 };
 
