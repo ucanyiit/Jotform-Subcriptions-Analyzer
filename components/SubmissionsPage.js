@@ -1,4 +1,4 @@
-import { Body, Button, Container, Content, Header, Icon, Left, List, ListItem, Right, Subtitle, Text, Title } from 'native-base';
+import { Body, Container, Content, Header, Left, List, ListItem, Picker, Right, Subtitle, Text, Title } from 'native-base';
 import React, { Component } from 'react';
 import { View } from 'react-native';
 import { connect } from "react-redux";
@@ -11,8 +11,14 @@ class SubmissionsPage extends Component {
 
     constructor(props) {
         super(props);
+        this.state = { selected: "all" };
         if (!this.props.user.loggedIn) this.props.navigateTo({ page: 'Login' });
-        else this.props.submissonsRequest();
+        else this.props.submissonsRequest(this.state.selected);
+    }
+
+    onValueChange(value: string) {
+        this.setState({ selected: value });
+        this.props.submissonsRequest(value);
     }
 
     renderRow = (submission) => {
@@ -49,9 +55,15 @@ class SubmissionsPage extends Component {
                         <Subtitle>Subtitle</Subtitle>
                     </Body>
                     <Right>
-                        <Button transparent>
-                            <Icon name='refresh' />
-                        </Button>
+                        <Picker
+                            mode="dropdown"
+                            style={{ color: '#fff', }}
+                            selectedValue={this.state.selected}
+                            onValueChange={this.onValueChange.bind(this)}>
+                            <Picker.Item label="All Forms" value="all" />
+                            <Picker.Item label="Subscriptions" value="subscription" />
+                            <Picker.Item label="Payments" value="payment" />
+                        </Picker>
                     </Right>
                 </Header>
                 <Content>
@@ -71,7 +83,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        submissonsRequest: () => { dispatch(submissonsRequest()) },
+        submissonsRequest: content => { dispatch(submissonsRequest(content)) },
         navigateTo: content => { dispatch(navigateTo(content)) }
     };
 };

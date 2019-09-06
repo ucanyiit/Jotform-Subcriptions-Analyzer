@@ -1,18 +1,24 @@
-import { Body, Button, Container, Content, Header, Icon, Left, List, ListItem, Right, Subtitle, Text, Title } from 'native-base';
+import { Body, Container, Content, Header, Icon, Left, List, ListItem, Picker, Right, Text, Title } from 'native-base';
 import React, { Component } from 'react';
 import { View } from 'react-native';
 import { connect } from "react-redux";
 import { formsRequest, navigateTo } from "../redux/actions";
 import Logout from './LogoutButton';
-import styles from './styles';
 import { WaitingPage } from './pages';
+import styles from './styles';
 
 class FormsPage extends Component {
 
     constructor(props) {
         super(props);
+        this.state = { selected: "all" };
         if (!this.props.user.loggedIn) this.props.navigateTo({ page: 'Login' });
-        else this.props.formsRequest();
+        else this.props.formsRequest(this.state.selected);
+    }
+
+    onValueChange(value: string) {
+        this.setState({ selected: value });
+        this.props.formsRequest(value);
     }
 
     renderRow = (form) => {
@@ -46,12 +52,17 @@ class FormsPage extends Component {
                     <Left />
                     <Body>
                         <Title>Forms</Title>
-                        <Subtitle>Subtitle</Subtitle>
                     </Body>
                     <Right>
-                        <Button transparent>
-                            <Icon name='refresh' />
-                        </Button>
+                        <Picker
+                            mode="dropdown"
+                            style={{ color: '#fff', }}
+                            selectedValue={this.state.selected}
+                            onValueChange={this.onValueChange.bind(this)}>
+                            <Picker.Item label="All Forms" value="all" />
+                            <Picker.Item label="Subscriptions" value="subscription" />
+                            <Picker.Item label="Payments" value="payment" />
+                        </Picker>
                     </Right>
                 </Header>
                 <Content>
@@ -70,7 +81,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        formsRequest: () => { dispatch(formsRequest()) },
+        formsRequest: content => { dispatch(formsRequest(content)) },
         navigateTo: content => { dispatch(navigateTo(content)) }
     };
 };
