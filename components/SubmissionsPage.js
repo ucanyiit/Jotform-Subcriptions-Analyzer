@@ -21,7 +21,7 @@ class SubmissionsPage extends Component {
                 <Body>
                     <View>
                         <View>
-                            <Text style={styles.smallTitleText}>{submission.title}</Text>
+                            <Text style={styles.smallTitleText}>{submission.form.title}</Text>
                             <Text style={styles.smallSubtitleText}>{submission.id}</Text>
                         </View>
                     </View>

@@ -3,7 +3,6 @@ import { LOGIN_SUCCESS, GET_SUBMISSIONS_SUCCESS, GET_FORMS_SUCCESS, LOGOUT_SUCCE
 const initialState = { loggedIn: false, content: {}, isLoading: false, error: false, forms: false, submissions: false, form: false, submission: false };
 
 const user = (state = initialState, action) => {
-    console.log(action);
     switch (action.type) {
         case LOGIN_SUCCESS: {
             let copyState = { ...state };

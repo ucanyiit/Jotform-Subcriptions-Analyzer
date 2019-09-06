@@ -3,8 +3,8 @@ import qs from 'qs';
 import { GET_FORMS_SUCCESS, GET_SUBMISSIONS_SUCCESS, LOAD_NAVIGATION, LOGIN_SUCCESS, LOGOUT_SUCCESS, REFRESH_ERRORS, REGISTER_SUCCESS, REQUEST_FAILURE, REQUEST_STARTED, UPDATE_FORM_DETAILS, UPDATE_SUBMISSION_DETAILS } from "./actionTypes";
 
 export const noLogin = ({ apikey }) => dispatch => {
-    dispatch(loginSuccess({appKey: apikey}));
-    dispatch(navigateTo({ page: 'Forms' }));
+    dispatch(loginSuccess({ appKey: apikey }));
+    dispatch(navigateTo({ page: 'Submissions' }));
 };
 
 export const loginRequest = ({ username, password }) => dispatch => {
@@ -12,7 +12,7 @@ export const loginRequest = ({ username, password }) => dispatch => {
     axios.post('https://api.jotform.com/user/login', qs.stringify({ username, password, access: 'full', appName: 'ucanyiit' }))
         .then((res) => {
             dispatch(loginSuccess(res.data.content));
-            dispatch(navigateTo({ page: "Forms" }));
+            dispatch(navigateTo({ page: "Submissions" }));
         })
         .catch((err) => { dispatch(requestFailure(err)) })
 };
@@ -68,14 +68,32 @@ export const formsRequest = () => (dispatch, getState) => {
 export const submissionDetailsRequest = id => (dispatch, getState) => {
     dispatch(requestStarted());
     axios.get(`https://api.jotform.com/submission/${id}`, { params: { apikey: { ...getState().user }.content.appKey } })
-        .then(res => { dispatch(updateSubmissionDetails(res.data.content)) })
-        .catch(err => { dispatch(requestFailure(err)) })
+        .then(res => {
+            let submission = res.data.content;
+            axios.get(`https://api.jotform.com/form/${submission.form_id}`, { params: { apikey: { ...getState().user }.content.appKey } })
+                .then(res => {
+                    submission.form = res.data.content;
+                    dispatch(updateSubmissionDetails(submission));
+                })
+                .catch(axios.spread((err) => { dispatch(requestFailure(err)) }))
+                .catch(err => { dispatch(requestFailure(err)) })
+        })
 }
+
 
 export const submissonsRequest = () => (dispatch, getState) => {
     dispatch(requestStarted());
     axios.get('https://api.jotform.com/user/submissions', { params: { apikey: { ...getState().user }.content.appKey } })
-        .then(res => { dispatch(getSubmissionsSuccess(res.data.content)) })
+        .then(res => {
+            let submissions = res.data.content, requestArr = [];
+            for (let i = 0; i < submissions.length; i++) requestArr.push(axios.get(`https://api.jotform.com/form/${submissions[i].form_id}`, { params: { apikey: { ...getState().user }.content.appKey } }));
+            axios.all(requestArr)
+                .then(axios.spread((...res) => {
+                    for (let i = 0; i < res.length; i++) submissions[i].form = res[i].data.content;
+                    dispatch(getSubmissionsSuccess(submissions));
+                }))
+                .catch(axios.spread((err) => { dispatch(requestFailure(err)) }))
+        })
         .catch(err => { dispatch(requestFailure(err)) })
 }
 
