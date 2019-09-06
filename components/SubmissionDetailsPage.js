@@ -1,8 +1,10 @@
-import { Body, Button, Card, CardItem, Container, Content, Header, Icon, Left, Right, Text, Title, Thumbnail } from 'native-base';
-import { Image } from 'react-native';
+import { Body, Button, Card, CardItem, Container, Content, Header, Icon, Left, Right, Text, Title } from 'native-base';
 import React from 'react';
+import { Image } from 'react-native';
+import IconAwesome from 'react-native-vector-icons/dist/FontAwesome5';
 import { connect } from "react-redux";
-import { submissionDetailsRequest, navigateTo } from "../redux/actions";
+import { navigateTo, submissionDetailsRequest } from "../redux/actions";
+import styles from './styles';
 import WaitingPage from './WaitingPage';
 
 class SubmissionDetailsPage extends React.Component {
@@ -13,23 +15,10 @@ class SubmissionDetailsPage extends React.Component {
         else if (typeof (this.props.user.submission) === "string") this.props.submissionDetailsRequest(this.props.user.submission);
     }
 
-    getPaymentFromAnswer(answer) {
-        for (a in answer) if (a == "1") return JSON.parse(answer[a]);
-    }
-
-    getAnswerFromSubmission() {
-        let submission = this.props.user.submission;
-        if (typeof submission === "string") return false;
-        else for (let answerID in submission.answers) if (submission.answers[answerID].paymentType) return submission.answers[answerID].answer
-        return false
-    }
-
     renderDetails = () => {
         let submission = this.props.user.submission;
-        if (this.getAnswerFromSubmission()) {
-            let payment = this.getPaymentFromAnswer(this.getAnswerFromSubmission());
-            payment.time = submission.created_at;
-            console.log(payment);
+        if (submission.payment) {
+            console.log(submission.payment);
             return (
                 <Container>
                     <Header>
@@ -39,7 +28,7 @@ class SubmissionDetailsPage extends React.Component {
                             </Button>
                         </Left>
                         <Body>
-                            <Title>{payment.name}</Title>
+                            <Title>Customer name: {submission.payment.name}</Title>
                         </Body>
                         <Right />
                     </Header>
@@ -47,28 +36,22 @@ class SubmissionDetailsPage extends React.Component {
                         <Left />
                         <CardItem>
                             <Left>
-                                <Text>{payment.period} {payment.price} {payment.currency}</Text>
-                                <Text note>{payment.gateway}</Text>
+                                <Text style={styles.smallTitleText}>{submission.payment.period} {submission.payment.price} {submission.payment.currency}</Text>
                             </Left>
+                            <Right/>
                         </CardItem>
                         <CardItem cardBody>
                             <Image source={{ uri: 'https://static01.nyt.com/images/2018/11/27/learning/Mothers1LN/Mothers1LN-articleLarge.png' }} style={{ height: 200, width: null, flex: 1 }} />
                         </CardItem>
                         <CardItem>
                             <Left>
-                                <Button transparent>
-                                    <Icon active name="thumbs-up" />
-                                    <Text>12 Likes</Text>
-                                </Button>
+                                <Text style={styles.smallSubtitleText}>{submission.payment.paymentType} with <IconAwesome active name="stripe-s" /></Text>
                             </Left>
                             <Body>
-                                <Button transparent>
-                                    <Icon active name="chatbubbles" />
-                                    <Text>4 Comments</Text>
-                                </Button>
                             </Body>
                             <Right>
-                                <Text>{payment.time}</Text>
+                                <Text style={styles.smallSubtitleText}>{submission.payment.date}</Text>
+                                <Text style={styles.smallSubtitleText}>{submission.payment.time}</Text>
                             </Right>
                         </CardItem>
                         <Right />

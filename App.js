@@ -11,7 +11,6 @@ export const FormsNav = createStackNavigator(
         Forms: {
             screen: FormsPage
         },
-
         FormDetails: {
             screen: FormDetailsPage
         }
@@ -26,7 +25,6 @@ export const SubmissionsNav = createStackNavigator(
         Submissons: {
             screen: SubmissionsPage
         },
-
         SubmissionDetails: {
             screen: SubmissionDetailsPage
         }
@@ -41,13 +39,9 @@ export const Drawer = createDrawerNavigator(
         Forms: {
             screen: FormsNav
         },
-
         Submissions: {
             screen: SubmissionsNav
         }
-    },
-    {
-        headerMode: 'none'
     }
 );
 

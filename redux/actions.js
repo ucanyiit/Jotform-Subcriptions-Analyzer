@@ -4,7 +4,7 @@ import { GET_FORMS_SUCCESS, GET_SUBMISSIONS_SUCCESS, LOAD_NAVIGATION, LOGIN_SUCC
 
 export const noLogin = ({ apikey }) => dispatch => {
     dispatch(loginSuccess({ appKey: apikey }));
-    dispatch(navigateTo({ page: 'Submissions' }));
+    dispatch(navigateTo({ page: 'Forms' }));
 };
 
 export const loginRequest = ({ username, password }) => dispatch => {
@@ -54,7 +54,17 @@ export const navigateTo = ({ page, id }) => (dispatch, getState) => {
 export const formDetailsRequest = id => (dispatch, getState) => {
     dispatch(requestStarted());
     axios.get(`https://api.jotform.com/form/${id}`, { params: { apikey: { ...getState().user }.content.appKey } })
-        .then(res => { dispatch(updateFormDetails(res.data.content)) })
+        .then(res => {
+            let form = res.data.content;
+            axios.get(`https://api.jotform.com/form/${form.id}/submissions`, { params: { apikey: { ...getState().user }.content.appKey } })
+                .then(res => {
+                    let payments = [];
+                    for (submission of res.data.content) payments.push(getPaymentFromSubmission(submission));
+                    form.payments = payments;
+                    dispatch(updateFormDetails(form));
+                })
+                .catch(err => { dispatch(requestFailure(err)) })
+        })
         .catch(err => { dispatch(requestFailure(err)) })
 }
 
@@ -73,9 +83,10 @@ export const submissionDetailsRequest = id => (dispatch, getState) => {
             axios.get(`https://api.jotform.com/form/${submission.form_id}`, { params: { apikey: { ...getState().user }.content.appKey } })
                 .then(res => {
                     submission.form = res.data.content;
+                    submission.payment = getPaymentFromSubmission(submission);
                     dispatch(updateSubmissionDetails(submission));
                 })
-                .catch(axios.spread((err) => { dispatch(requestFailure(err)) }))
+                .catch(err => { dispatch(requestFailure(err)) })
                 .catch(err => { dispatch(requestFailure(err)) })
         })
 }
@@ -97,6 +108,23 @@ export const submissonsRequest = () => (dispatch, getState) => {
         .catch(err => { dispatch(requestFailure(err)) })
 }
 
+const getPaymentFromSubmission = (submission) => {
+    let payment = false;
+    if (typeof submission === "string") return false;
+    else for (let answerID in submission.answers) {
+        if (submission.answers[answerID].paymentType) {
+            let answer = submission.answers[answerID].answer
+            for (a in answer) if (a == "1") payment = JSON.parse(answer[a]);
+            let time = submission.created_at;
+            time = time.split(' ');
+            payment.date = time[0];
+            payment.time = time[1];
+            payment.submission_id = submission.id;
+            payment.form_id = submission.form_id;
+        }
+    }
+    return payment
+}
 
 const updateFormDetails = content => ({
     type: UPDATE_FORM_DETAILS,
