@@ -11,7 +11,7 @@ class FormsPage extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { selected: "all" };
+        this.state = { selected: "subscription" };
         if (!this.props.user.loggedIn) this.props.navigateTo({ page: 'Login' });
         else this.props.formsRequest(this.state.selected);
     }

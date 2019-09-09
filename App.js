@@ -13,6 +13,9 @@ export const FormsNav = createStackNavigator(
         },
         FormDetails: {
             screen: FormDetailsPage
+        },
+        SubmissionDetails: {
+            screen: SubmissionDetailsPage
         }
     },
     {

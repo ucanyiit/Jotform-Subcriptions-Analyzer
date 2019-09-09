@@ -40,5 +40,11 @@ module.exports = StyleSheet.create({
         marginLeft: 24,
         marginRight: 24,
         marginTop: 6,
+    },
+    submisisonsTitleText: {
+        marginLeft: 24,
+        marginRight: 24,
+        marginTop: 6,
+        fontSize: 20
     }
 });

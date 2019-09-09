@@ -1,6 +1,5 @@
-import { Body, Button, Card, CardItem, Container, Content, Header, Icon, Left, Right, Text, Title } from 'native-base';
+import { Body, Button, Card, CardItem, Container, Content, Header, Icon, Left, List, ListItem, Right, Text, Title } from 'native-base';
 import React from 'react';
-import { Image } from 'react-native';
 import IconAwesome from 'react-native-vector-icons/dist/FontAwesome5';
 import { connect } from "react-redux";
 import { navigateTo, submissionDetailsRequest } from "../redux/actions";
@@ -15,10 +14,14 @@ class SubmissionDetailsPage extends React.Component {
         else if (typeof (this.props.user.submission) === "string") this.props.submissionDetailsRequest(this.props.user.submission);
     }
 
+    getDateString(date){
+        return `${date.year} ${date.month} ${date.day}`
+    }
+
     renderDetails = () => {
         let submission = this.props.user.submission;
-        if (submission.payment) {
-            console.log(submission.payment);
+        if (submission.subscription) {
+            console.log(submission.subscription);
             return (
                 <Container>
                     <Header>
@@ -28,7 +31,7 @@ class SubmissionDetailsPage extends React.Component {
                             </Button>
                         </Left>
                         <Body>
-                            <Title>Customer name: {submission.payment.name}</Title>
+                            <Title>Customer name: {submission.subscription.name}</Title>
                         </Body>
                         <Right />
                     </Header>
@@ -36,22 +39,23 @@ class SubmissionDetailsPage extends React.Component {
                         <Left />
                         <CardItem>
                             <Left>
-                                <Text style={styles.smallTitleText}>{submission.payment.period} {submission.payment.price} {submission.payment.currency}</Text>
+                                <Text style={styles.smallTitleText}>{submission.subscription.period} subscription: {submission.subscription.price} {submission.subscription.currency}</Text>
                             </Left>
-                            <Right/>
+                            <Right />
                         </CardItem>
                         <CardItem cardBody>
-                            <Image source={{ uri: 'https://static01.nyt.com/images/2018/11/27/learning/Mothers1LN/Mothers1LN-articleLarge.png' }} style={{ height: 200, width: null, flex: 1 }} />
+                            <Left/>
+                            <Right/>
                         </CardItem>
                         <CardItem>
                             <Left>
-                                <Text style={styles.smallSubtitleText}>{submission.payment.paymentType} with <IconAwesome active name="stripe-s" /></Text>
+                                <Text style={styles.smallSubtitleText}>{submission.subscription.paymentType} with <IconAwesome active name="stripe-s" /></Text>
                             </Left>
                             <Body>
                             </Body>
                             <Right>
-                                <Text style={styles.smallSubtitleText}>{submission.payment.date}</Text>
-                                <Text style={styles.smallSubtitleText}>{submission.payment.time}</Text>
+                                <Text style={styles.smallSubtitleText}>{this.getDateString(submission.subscription.date)}</Text>
+                                <Text style={styles.smallSubtitleText}>{submission.subscription.time}</Text>
                             </Right>
                         </CardItem>
                         <Right />

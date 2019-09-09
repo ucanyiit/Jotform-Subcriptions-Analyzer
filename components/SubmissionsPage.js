@@ -11,7 +11,7 @@ class SubmissionsPage extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { selected: "all" };
+        this.state = { selected: "subscription" };
         if (!this.props.user.loggedIn) this.props.navigateTo({ page: 'Login' });
         else this.props.submissonsRequest(this.state.selected);
     }
@@ -28,7 +28,7 @@ class SubmissionsPage extends Component {
                     <View>
                         <View>
                             <Text style={styles.smallTitleText}>{submission.form.title}</Text>
-                            <Text style={styles.smallSubtitleText}>{submission.id}</Text>
+                            <Text style={styles.smallSubtitleText}>{submission.subscription.period} {submission.subscription.price} {submission.subscription.currency}</Text>
                         </View>
                     </View>
                 </Body>
@@ -73,7 +73,6 @@ class SubmissionsPage extends Component {
             </Container>
         )
     }
-
 }
 
 const mapStateToProps = state => {
