@@ -5,7 +5,7 @@ import { filterForm, filterSubmission, getSubscriptionFromSubmission } from "./f
 
 export const noLogin = ({ apikey }) => dispatch => {
     dispatch(loginSuccess({ appKey: apikey }));
-    dispatch(navigateTo({ page: 'Forms' }));
+    dispatch(navigateTo({ page: 'Submissons' }));
 };
 
 export const loginRequest = ({ username, password }) => dispatch => {

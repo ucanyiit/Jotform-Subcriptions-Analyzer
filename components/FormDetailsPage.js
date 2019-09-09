@@ -2,7 +2,6 @@ import { Body, Button, Container, Content, Header, Icon, Left, List, ListItem, P
 import React from 'react';
 import { connect } from "react-redux";
 import { formDetailsRequest, navigateTo } from "../redux/actions";
-import { getAllPaymentsInNext } from "../redux/functions";
 import styles from './styles';
 import WaitingPage from './WaitingPage';
 
@@ -20,7 +19,6 @@ class FormDetailsPage extends React.Component {
     }
 
     renderGraph = (subscriptions) => {
-        for (i in subscriptions) console.log(getAllPaymentsInNext({year: 2019, month:9, day: 9}, { month: 1 }, subscriptions[i]));
         return (
             <View>
                 <Text>Hello</Text>

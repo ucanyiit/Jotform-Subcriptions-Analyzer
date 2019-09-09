@@ -1,12 +1,12 @@
-export const getAllPaymentsInNext = (date, interval, subscription) => {
-    const payments = subscription.payments, lastDate = incrementDate(date, interval);
+export const getAllPaymentsToDate = (lastDate, subscription) => {
+    const payments = subscription.payments;
     let totalPayment = 0;
-    for(i in payments){
-        if(isSmallerDate(payments[i], lastDate)) totalPayment+=subscription.price;
+    for (i in payments) {
+        if (isSmallerDate(payments[i], lastDate)) totalPayment += subscription.price;
         else break;
     }
     return totalPayment;
-} 
+}
 
 export const filterSubmission = (submission, type) => {
     if (type == getSubscriptionFromSubmission(submission).paymentType) return 1;
@@ -38,17 +38,26 @@ export const getSubscriptionFromSubmission = (submission) => {
 }
 
 const incrementDate = (date, increment) => {
-    const months = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+    let months = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+    if (date.year % 4 == 0) months[2] = 29;
     if (increment.year) date.year += increment.year;
     if (increment.month) date.month += increment.month;
     if (increment.day) date.day += increment.day;
-    while (date.day > months[date.month]) {
-        date.day -= months[date.month];
-        date.month += 1;
-    }
     while (date.month > 12) {
         date.month -= 12;
         date.year += 1;
+        if (date.year % 4 == 0) months[2] = 29;
+        else months[2] = 28;
+    }
+    while (date.day > months[date.month]) {
+        date.day -= months[date.month];
+        date.month += 1;
+        while (date.month > 12) {
+            date.month -= 12;
+            date.year += 1;
+            if (date.year % 4 == 0) months[2] = 29;
+            else months[2] = 28;
+        }
     }
     return date
 }
@@ -75,7 +84,7 @@ const getPaymentList = (subscription) => {
     return payments;
 }
 
-const getDateObject = (date) => {
+export const getDateObject = (date) => {
     date = date.split("-");
     return { year: parseInt(date[0]), month: parseInt(date[1]), day: parseInt(date[2]) };
 }
