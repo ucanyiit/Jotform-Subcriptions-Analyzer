@@ -1,10 +1,10 @@
 import moment from 'moment';
-import { Body, Button, Card, CardItem, Container, Content, DatePicker, Header, Icon, Left, Right, Text, Title } from 'native-base';
+import { Body, Button, Card, CardItem, Container, DatePicker, Header, Icon, Left, List, ListItem, Right, Text, Title } from 'native-base';
 import React from 'react';
 import IconAwesome from 'react-native-vector-icons/dist/FontAwesome5';
 import { connect } from "react-redux";
 import { navigateTo, submissionDetailsRequest } from "../redux/actions";
-import { getAllPaymentsToDate, getDateObject } from "../redux/functions";
+import { getAllPaymentsToDateFromSubscription, getDateObject } from "../redux/functions";
 import styles from './styles';
 import WaitingPage from './WaitingPage';
 
@@ -22,15 +22,66 @@ class SubmissionDetailsPage extends React.Component {
 
     setDate(newDate) {
         this.setState({ markedDate: newDate, markedDateObject: getDateObject(moment(newDate).format("YYYY-MM-DD")) });
-        this.setState({ allPayments: getAllPaymentsToDate(this.state.markedDateObject, this.props.user.submission.subscription) });
+        this.setState({ allPayments: getAllPaymentsToDateFromSubscription(this.state.markedDateObject, this.props.user.submission.subscription) });
     }
 
-    getPayment() {
-        if (!this.state.allPayments) return (<Content><Text>No</Text></Content>)
-        else return (
-            <Content>
-                <Text>{this.state.allPayments}</Text>
-            </Content>
+    getHeader() {
+        let title = "Submission Details";
+        if (this.props.user.submission.subscription) title = "Subscription Details";
+        return (
+            <Header>
+                <Left>
+                    <Button transparent onPress={() => this.props.navigation.goBack()}>
+                        <Icon name='arrow-back' />
+                    </Button>
+                </Left>
+                <Body>
+                    <Title>{title}</Title>
+                </Body>
+                <Right />
+            </Header>
+        )
+    }
+
+    getEarnings() {
+        let text;
+        if (!this.state.allPayments) return text = <Text style={styles.dateText}>Please select a date</Text>;
+        else text = <Text style={styles.dateText}>{this.state.allPayments} {this.props.user.submission.subscription.currency}</Text>;
+        return text
+    }
+
+    getDatePickerCard() {
+        let earnings = this.getEarnings();
+        return (
+            <Card style={styles.dateCard}>
+                <CardItem bordered style={styles.cardHeader}>
+                    <Text style={styles.cardTitle}>Calculate earnings to the date</Text>
+                </CardItem>
+                <CardItem bordered>
+                    <Left />
+                    <DatePicker
+                        defaultDate={this.currentDate}
+                        minimumDate={this.currentDate}
+                        maximumDate={new Date(2030, 1, 1)}
+                        locale={"en"}
+                        timeZoneOffsetInMinutes={undefined}
+                        modalTransparent={false}
+                        animationType={"fade"}
+                        androidMode={"spinner"}
+                        placeHolderText="Select date"
+                        textStyle={styles.datePicker}
+                        placeHolderTextStyle={styles.datePicker}
+                        onDateChange={(newDate) => this.setDate(newDate)}
+                        disabled={false}
+                    />
+                    <Right />
+                </CardItem>
+                <CardItem bordered>
+                    <Left />
+                    {earnings}
+                    <Right />
+                </CardItem>
+            </Card>
         )
     }
 
@@ -38,102 +89,93 @@ class SubmissionDetailsPage extends React.Component {
         return `${date.year} ${date.month} ${date.day}`
     }
 
-    renderDetails = () => {
+    getDetailsList() {
         let submission = this.props.user.submission;
-        let content = this.getPayment();
         if (submission.subscription) {
-            console.log("hi", this.state);
+            let subscription = submission.subscription;
+            return (
+                <Card style={styles.dateCard}>
+                    <CardItem bordered style={styles.cardHeader}>
+                        <Text style={styles.cardTitle}>Details</Text>
+                    </CardItem>
+                    <List>
+                        <ListItem>
+                            <Left><Text style={styles.smallTitleText}>Submission ID: </Text></Left>
+                            <Text style={styles.smallTitleText}>{submission.id}</Text>
+                        </ListItem>
+                        <ListItem button onPress={() => { this.props.navigateTo({ page: 'FormDetails', id: submission.form.id }) }}>
+                            <Left><Text style={styles.smallTitleText}>Form: </Text></Left>
+                            <Text style={styles.smallTitleText}>{submission.form.title}</Text>
+                        </ListItem>
+                        <ListItem>
+                            <Left><Text style={styles.smallTitleText}>{subscription.period} subscription:</Text></Left>
+                            <Text style={styles.smallTitleText}>{subscription.price} {subscription.currency}</Text>
+                        </ListItem>
+                        <ListItem>
+                            <Left><Text style={styles.smallTitleText}>Customer name: </Text></Left>
+                            <Text style={styles.smallTitleText}>{subscription.name}</Text>
+                        </ListItem>
+                        <ListItem>
+                            <Left><Text style={styles.smallTitleText}>Subscription start date: </Text></Left>
+                            <Text style={styles.smallTitleText}>{submission.created_at}</Text>
+                        </ListItem>
+                        <ListItem>
+                            <Left><Text style={styles.smallTitleText}>Payment service: </Text></Left>
+                            <IconAwesome active name="stripe-s" />
+                        </ListItem>
+                    </List>
+                </Card>
+            )
+
+        }
+        else if (typeof submission != "string") {
             return (
                 <Container>
-                    <Header>
-                        <Left>
-                            <Button transparent onPress={() => this.props.navigation.goBack()}>
-                                <Icon name='arrow-back' />
-                            </Button>
-                        </Left>
-                        <Body>
-                            <Title>Customer name: {submission.subscription.name}</Title>
-                        </Body>
-                        <Right />
-                    </Header>
+                    <List>
+                        <ListItem>
+                            <Left><Text style={styles.smallTitleText}>Submission ID: </Text></Left>
+                            <Text style={styles.smallTitleText}>{submission.id}</Text>
+                        </ListItem>
+                        <ListItem>
+                            <Left><Text style={styles.smallTitleText}>Form: </Text></Left>
+                            <Text style={styles.smallTitleText}>{submission.form.title}</Text>
+                        </ListItem>
+                    </List>
                     <Card>
-                        <Left />
                         <CardItem>
-                            <Left>
-                                <Text style={styles.smallTitleText}>{submission.subscription.period} subscription: {submission.subscription.price} {submission.subscription.currency}</Text>
-                            </Left>
-                            <Right />
-                        </CardItem>
-                        <CardItem cardBody>
                             <Left />
-                            <DatePicker
-                                defaultDate={this.currentDate}
-                                minimumDate={this.currentDate}
-                                maximumDate={new Date(2030, 1, 1)}
-                                locale={"en"}
-                                timeZoneOffsetInMinutes={undefined}
-                                modalTransparent={false}
-                                animationType={"fade"}
-                                androidMode={"default"}
-                                placeHolderText="Select date"
-                                textStyle={{ color: "blue" }}
-                                placeHolderTextStyle={{ color: "#d3d3d3" }}
-                                onDateChange={(newDate) => this.setDate(newDate)}
-                                disabled={false}
-                            />
-                            {content}
+                            <Text style={styles.smallSubtitleText}>There's no additional info about this submission since it's not a payment or subscription</Text>
                             <Right />
                         </CardItem>
-                        <CardItem>
-                            <Left>
-                                <Text style={styles.smallSubtitleText}>{submission.subscription.paymentType} with <IconAwesome active name="stripe-s" /></Text>
-                            </Left>
-                            <Body>
-                            </Body>
-                            <Right>
-                                <Text style={styles.smallSubtitleText}>{this.getDateString(submission.subscription.date)}</Text>
-                                <Text style={styles.smallSubtitleText}>{submission.subscription.time}</Text>
-                            </Right>
-                        </CardItem>
-                        <Right />
                     </Card>
                 </Container>
             )
         }
         else return (
-            <Container>
-                <Header>
-                    <Left>
-                        <Button transparent onPress={() => this.props.navigation.goBack()}>
-                            <Icon name='arrow-back' />
-                        </Button>
-                    </Left>
-                    <Body>
-                        <Title>{submission.id}</Title>
-                    </Body>
-                    <Right />
-                </Header>
-                <Content>
-                    <Body>
-                        <Text>
-                        //Your text here
-                        </Text>
-
-                    </Body>
-                    <Left>
-                        <Button transparent textStyle={{ color: '#87838B' }}>
-                            <Icon name="logo-github" />
-                            <Text note>{submission.url}</Text>
-                        </Button>
-                    </Left>
-                </Content>
-            </Container>
+            <WaitingPage />
         )
+
+    }
+
+    getDetails() {
+        if (this.props.user.submission.subscription) {
+            return (
+                <Container>
+                    {this.getDetailsList()}
+                    {this.getDatePickerCard()}
+                </Container>
+            )
+        }
+        else return this.getDetailsList()
     }
 
     render() {
-        if (this.props.user.isLoading) return <WaitingPage />
-        else return this.renderDetails();
+        return (
+            <Container>
+                {this.getHeader()}
+                {this.getDetails()}
+            </Container>
+        )
     }
 }
 

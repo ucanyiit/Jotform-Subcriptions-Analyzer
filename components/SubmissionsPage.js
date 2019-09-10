@@ -21,14 +21,19 @@ class SubmissionsPage extends Component {
         this.props.submissonsRequest(value);
     }
 
+    getSubmissionText(submission){
+        if(submission.subscription) return (`${submission.subscription.period} ${submission.subscription.price} ${submission.subscription.currency}`);
+        else return (`No payment`)
+    }
+
     renderRow = (submission) => {
         return (
             <ListItem button onPress={() => { this.props.navigateTo({ page: 'SubmissionDetails', id: submission.id }) }} style={styles.productItem}>
                 <Body>
                     <View>
                         <View>
-                            <Text style={styles.smallTitleText}>{submission.form.title}</Text>
-                            <Text style={styles.smallSubtitleText}>{submission.subscription.period} {submission.subscription.price} {submission.subscription.currency}</Text>
+                            <Text style={styles.smallTitleText}>{this.getSubmissionText(submission)}</Text>
+                            <Text style={styles.smallSubtitleText}>{submission.form.title}</Text>
                         </View>
                     </View>
                 </Body>
@@ -52,7 +57,6 @@ class SubmissionsPage extends Component {
                     <Left />
                     <Body>
                         <Title>Submissions</Title>
-                        <Subtitle>Subtitle</Subtitle>
                     </Body>
                     <Right>
                         <Picker
@@ -60,7 +64,7 @@ class SubmissionsPage extends Component {
                             style={{ color: '#fff', }}
                             selectedValue={this.state.selected}
                             onValueChange={this.onValueChange.bind(this)}>
-                            <Picker.Item label="All Forms" value="all" />
+                            <Picker.Item label="All Submissions" value="all" />
                             <Picker.Item label="Subscriptions" value="subscription" />
                             <Picker.Item label="Payments" value="payment" />
                         </Picker>

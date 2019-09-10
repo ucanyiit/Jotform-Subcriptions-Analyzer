@@ -1,9 +1,20 @@
-export const getAllPaymentsToDate = (lastDate, subscription) => {
+export const getAllPaymentsToDateFromSubscription = (lastDate, subscription) => {
     const payments = subscription.payments;
     let totalPayment = 0;
     for (i in payments) {
         if (isSmallerDate(payments[i], lastDate)) totalPayment += subscription.price;
         else break;
+    }
+    return totalPayment;
+}
+
+export const getAllPaymentsToDateFromSubscriptions = (lastDate, subscriptions) => {
+    let totalPayment = 0;
+    for(j in subscriptions){
+        for (i in subscriptions[j].payments) {
+            if (isSmallerDate(subscriptions[j].payments[i], lastDate)) totalPayment += subscriptions[j].price;
+            else break;
+        }
     }
     return totalPayment;
 }
