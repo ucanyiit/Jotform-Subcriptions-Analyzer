@@ -1,7 +1,7 @@
 import axios from 'axios';
 import qs from 'qs';
 import { GET_FORMS_SUCCESS, GET_SUBMISSIONS_SUCCESS, LOAD_NAVIGATION, LOGIN_SUCCESS, LOGOUT_SUCCESS, REFRESH_ERRORS, REGISTER_SUCCESS, REQUEST_FAILURE, REQUEST_STARTED, UPDATE_FORM_DETAILS, UPDATE_SUBMISSION_DETAILS } from "./actionTypes";
-import { filterForm, filterSubmission, getSubscriptionFromSubmission } from "./functions";
+import { filterForm, filterSubmission, getPaymentFromSubmission } from "./functions";
 
 export const noLogin = ({ apikey }) => dispatch => {
     dispatch(loginSuccess({ appKey: apikey }));
@@ -59,13 +59,15 @@ export const formDetailsRequest = id => (dispatch, getState) => {
             let form = res.data.content;
             axios.get(`https://api.jotform.com/form/${form.id}/submissions`, { params: { apikey: { ...getState().user }.content.appKey } })
                 .then(res => {
-                    let subscriptions = [];
+                    let payments = [];
                     for (submission of res.data.content) {
-                        subscriptions.push(getSubscriptionFromSubmission(submission));
-                        submission.subscription = getSubscriptionFromSubmission(submission);
+                        let payment = getPaymentFromSubmission(submission);
+                        payments.push(payment);
+                        submission.payment = payment;
+                        if(payment.paymentType) form.paymentType = payment.paymentType;
                     }
                     form.submissions = res.data.content;
-                    form.subscriptions = subscriptions;
+                    form.payments = payments;
                     dispatch(updateFormDetails(form));
                 })
                 .catch(err => { dispatch(requestFailure(err)) })
@@ -102,7 +104,7 @@ export const submissionDetailsRequest = id => (dispatch, getState) => {
             axios.get(`https://api.jotform.com/form/${submission.form_id}`, { params: { apikey: { ...getState().user }.content.appKey } })
                 .then(res => {
                     submission.form = res.data.content;
-                    submission.subscription = getSubscriptionFromSubmission(submission);
+                    submission.payment = getPaymentFromSubmission(submission);
                     dispatch(updateSubmissionDetails(submission));
                 })
                 .catch(err => { dispatch(requestFailure(err)) })
@@ -119,7 +121,7 @@ export const submissonsRequest = type => (dispatch, getState) => {
                 for (submission of submissions) if (filterSubmission(submission, type)) filteredSubmissions.push(submission);
                 submissions = filteredSubmissions;
             }
-            for (submission of submissions) submission.subscription = getSubscriptionFromSubmission(submission);
+            for (submission of submissions) submission.payment = getPaymentFromSubmission(submission);
             for (submission of submissions) requestArr.push(axios.get(`https://api.jotform.com/form/${submission.form_id}`, { params: { apikey: { ...getState().user }.content.appKey } }));
             axios.all(requestArr)
                 .then(axios.spread((...res) => {

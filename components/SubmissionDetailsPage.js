@@ -22,12 +22,11 @@ class SubmissionDetailsPage extends React.Component {
 
     setDate(newDate) {
         this.setState({ markedDate: newDate, markedDateObject: getDateObject(moment(newDate).format("YYYY-MM-DD")) });
-        this.setState({ allPayments: getAllPaymentsToDateFromSubscription(this.state.markedDateObject, this.props.user.submission.subscription) });
+        this.setState({ allPayments: getAllPaymentsToDateFromSubscription(this.state.markedDateObject, this.props.user.submission.payment) });
     }
 
     getHeader() {
         let title = "Submission Details";
-        if (this.props.user.submission.subscription) title = "Subscription Details";
         return (
             <Header>
                 <Left>
@@ -46,7 +45,7 @@ class SubmissionDetailsPage extends React.Component {
     getEarnings() {
         let text;
         if (!this.state.allPayments) return text = <Text style={styles.dateText}>Please select a date</Text>;
-        else text = <Text style={styles.dateText}>{this.state.allPayments} {this.props.user.submission.subscription.currency}</Text>;
+        else text = <Text style={styles.dateText}>{this.state.allPayments} {this.props.user.submission.payment.currency}</Text>;
         return text
     }
 
@@ -91,8 +90,8 @@ class SubmissionDetailsPage extends React.Component {
 
     getDetailsList() {
         let submission = this.props.user.submission;
-        if (submission.subscription) {
-            let subscription = submission.subscription;
+        if (submission.payment && submission.payment.paymentType == "subscription") {
+            let payment = submission.payment;
             return (
                 <Card style={styles.dateCard}>
                     <CardItem bordered style={styles.cardHeader}>
@@ -108,12 +107,12 @@ class SubmissionDetailsPage extends React.Component {
                             <Text style={styles.smallTitleText}>{submission.form.title}</Text>
                         </ListItem>
                         <ListItem>
-                            <Left><Text style={styles.smallTitleText}>{subscription.period} subscription:</Text></Left>
-                            <Text style={styles.smallTitleText}>{subscription.price} {subscription.currency}</Text>
+                            <Left><Text style={styles.smallTitleText}>{payment.period} payment:</Text></Left>
+                            <Text style={styles.smallTitleText}>{payment.price} {payment.currency}</Text>
                         </ListItem>
                         <ListItem>
                             <Left><Text style={styles.smallTitleText}>Customer name: </Text></Left>
-                            <Text style={styles.smallTitleText}>{subscription.name}</Text>
+                            <Text style={styles.smallTitleText}>{payment.name}</Text>
                         </ListItem>
                         <ListItem>
                             <Left><Text style={styles.smallTitleText}>Subscription start date: </Text></Left>
@@ -126,7 +125,46 @@ class SubmissionDetailsPage extends React.Component {
                     </List>
                 </Card>
             )
-
+        }
+        else if (submission.payment && submission.payment.paymentType == "product") {
+            let payment = submission.payment;
+            return (
+                <Card style={styles.dateCard}>
+                    <CardItem bordered style={styles.cardHeader}>
+                        <Text style={styles.cardTitle}>Details</Text>
+                    </CardItem>
+                    <List>
+                        <ListItem>
+                            <Left><Text style={styles.smallTitleText}>Submission ID: </Text></Left>
+                            <Text style={styles.smallTitleText}>{submission.id}</Text>
+                        </ListItem>
+                        <ListItem button onPress={() => { this.props.navigateTo({ page: 'FormDetails', id: submission.form.id }) }}>
+                            <Left><Text style={styles.smallTitleText}>Form: </Text></Left>
+                            <Text style={styles.smallTitleText}>{submission.form.title}</Text>
+                        </ListItem>
+                        <ListItem>
+                            <Left><Text style={styles.smallTitleText}>Total Payment:</Text></Left>
+                            <Text style={styles.smallTitleText}>{payment.price * payment.quantity} {payment.currency}</Text>
+                        </ListItem>
+                        <ListItem>
+                            <Left><Text style={styles.smallTitleText}>Product name: </Text></Left>
+                            <Text style={styles.smallTitleText}>{payment.name}</Text>
+                        </ListItem>
+                        <ListItem>
+                            <Left><Text style={styles.smallTitleText}>Product quantity: </Text></Left>
+                            <Text style={styles.smallTitleText}>{payment.quantity}</Text>
+                        </ListItem>
+                        <ListItem>
+                            <Left><Text style={styles.smallTitleText}>Payment date: </Text></Left>
+                            <Text style={styles.smallTitleText}>{submission.created_at}</Text>
+                        </ListItem>
+                        <ListItem>
+                            <Left><Text style={styles.smallTitleText}>Payment service: </Text></Left>
+                            <IconAwesome active name="stripe-s" />
+                        </ListItem>
+                    </List>
+                </Card>
+            )
         }
         else if (typeof submission != "string") {
             return (
@@ -158,7 +196,7 @@ class SubmissionDetailsPage extends React.Component {
     }
 
     getDetails() {
-        if (this.props.user.submission.subscription) {
+        if (this.props.user.submission.payment && this.props.user.submission.payment.paymentType == "subscription") {
             return (
                 <Container>
                     {this.getDetailsList()}

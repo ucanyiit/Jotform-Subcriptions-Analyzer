@@ -1,8 +1,9 @@
-import { Body, Container, Content, Header, Left, List, ListItem, Picker, Right, Subtitle, Text, Title } from 'native-base';
+import { Body, Container, Content, Header, Left, List, ListItem, Picker, Right, Text, Title } from 'native-base';
 import React, { Component } from 'react';
 import { View } from 'react-native';
 import { connect } from "react-redux";
 import { navigateTo, submissonsRequest } from "../redux/actions";
+import { getSubmissionText } from "../redux/functions";
 import Logout from './LogoutButton';
 import styles from './styles';
 import WaitingPage from './WaitingPage';
@@ -11,7 +12,7 @@ class SubmissionsPage extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { selected: "subscription" };
+        this.state = { selected: "product" };
         if (!this.props.user.loggedIn) this.props.navigateTo({ page: 'Login' });
         else this.props.submissonsRequest(this.state.selected);
     }
@@ -21,18 +22,13 @@ class SubmissionsPage extends Component {
         this.props.submissonsRequest(value);
     }
 
-    getSubmissionText(submission){
-        if(submission.subscription) return (`${submission.subscription.period} ${submission.subscription.price} ${submission.subscription.currency}`);
-        else return (`No payment`)
-    }
-
     renderRow = (submission) => {
         return (
             <ListItem button onPress={() => { this.props.navigateTo({ page: 'SubmissionDetails', id: submission.id }) }} style={styles.productItem}>
                 <Body>
                     <View>
                         <View>
-                            <Text style={styles.smallTitleText}>{this.getSubmissionText(submission)}</Text>
+                            <Text style={styles.smallTitleText}>{getSubmissionText(submission)}</Text>
                             <Text style={styles.smallSubtitleText}>{submission.form.title}</Text>
                         </View>
                     </View>
@@ -66,7 +62,7 @@ class SubmissionsPage extends Component {
                             onValueChange={this.onValueChange.bind(this)}>
                             <Picker.Item label="All Submissions" value="all" />
                             <Picker.Item label="Subscriptions" value="subscription" />
-                            <Picker.Item label="Payments" value="payment" />
+                            <Picker.Item label="One Time Payments" value="product" />
                         </Picker>
                     </Right>
                 </Header>

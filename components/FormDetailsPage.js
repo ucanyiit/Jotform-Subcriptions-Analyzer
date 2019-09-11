@@ -3,7 +3,7 @@ import { Body, Button, Card, CardItem, Container, Content, DatePicker, Header, I
 import React from 'react';
 import { connect } from "react-redux";
 import { formDetailsRequest, navigateTo } from "../redux/actions";
-import { getAllPaymentsToDateFromSubscriptions, getDateObject } from "../redux/functions";
+import { getAllPaymentsToDateFromSubscriptions, getDateObject, getSubmissionText } from "../redux/functions";
 import styles from './styles';
 import WaitingPage from './WaitingPage';
 
@@ -21,13 +21,13 @@ class FormDetailsPage extends React.Component {
 
     setDate(newDate) {
         this.setState({ markedDate: newDate, markedDateObject: getDateObject(moment(newDate).format("YYYY-MM-DD")) });
-        this.setState({ allPayments: getAllPaymentsToDateFromSubscriptions(this.state.markedDateObject, this.props.user.form.subscriptions) });
+        this.setState({ allPayments: getAllPaymentsToDateFromSubscriptions(this.state.markedDateObject, this.props.user.form.payments) });
     }
 
     getEarnings() {
         let text;
         if (!this.state.allPayments) return text = <Text style={styles.dateText}>Please select a date</Text>;
-        else text = <Text style={styles.dateText}>{this.state.allPayments} {this.props.user.form.subscriptions[0].currency}</Text>;
+        else text = <Text style={styles.dateText}>{this.state.allPayments} {this.props.user.form.payments[0].currency}</Text>;
         return text
     }
 
@@ -66,14 +66,12 @@ class FormDetailsPage extends React.Component {
     }
 
     renderRow(submission) {
-        let text = <Text style={styles.smallTitleText}>No payment info</Text>
-        if (submission.subscription) text = <Text style={styles.smallTitleText}>{submission.subscription.period} {submission.subscription.price} {submission.subscription.currency}</Text>
         return (
             <ListItem button onPress={() => { this.props.navigateTo({ page: 'SubmissionDetails', id: submission.id }) }} style={styles.productItem}>
                 <Body>
                     <View>
                         <View>
-                            {text}
+                            <Text style={styles.smallTitleText}>{getSubmissionText(submission)}</Text>
                             <Text style={styles.smallSubtitleText}>{submission.created_at}</Text>
                         </View>
                     </View>
@@ -84,7 +82,61 @@ class FormDetailsPage extends React.Component {
 
     getDetailsList() {
         let form = this.props.user.form;
-        return (
+        if (form.paymentType && form.paymentType == "subscription") return (
+            <Content>
+                <Card style={styles.dateCard}>
+                    <CardItem bordered style={styles.cardHeader}>
+                        <Text style={styles.cardTitle}>Details</Text>
+                    </CardItem>
+                    <List>
+                        <ListItem>
+                            <Left><Text style={styles.smallTitleText}>Form: </Text></Left>
+                            <Text style={styles.smallTitleText}>{form.title}</Text>
+                        </ListItem>
+                        <ListItem>
+                            <Left><Text style={styles.smallTitleText}>Form ID: </Text></Left>
+                            <Text style={styles.smallTitleText}>{form.id}</Text>
+                        </ListItem>
+                        <ListItem>
+                            <Left><Text style={styles.smallTitleText}>Created at:</Text></Left>
+                            <Text style={styles.smallTitleText}>{form.created_at}</Text>
+                        </ListItem>
+                        <ListItem>
+                            <Left><Text style={styles.smallTitleText}>Payment Type:</Text></Left>
+                            <Text style={styles.smallTitleText}>Subscription</Text>
+                        </ListItem>
+                    </List>
+                </Card>
+                {this.getDatePickerCard()}
+            </Content>
+        )
+        else if (form.paymentType && form.paymentType == "product") return (
+            <Card style={styles.dateCard}>
+                <CardItem bordered style={styles.cardHeader}>
+                    <Text style={styles.cardTitle}>Details</Text>
+                </CardItem>
+                <List>
+                    <ListItem>
+                        <Left><Text style={styles.smallTitleText}>Form: </Text></Left>
+                        <Text style={styles.smallTitleText}>{form.title}</Text>
+                    </ListItem>
+                    <ListItem>
+                        <Left><Text style={styles.smallTitleText}>Form ID: </Text></Left>
+                        <Text style={styles.smallTitleText}>{form.id}</Text>
+                    </ListItem>
+                    <ListItem>
+                        <Left><Text style={styles.smallTitleText}>Created at:</Text></Left>
+                        <Text style={styles.smallTitleText}>{form.created_at}</Text>
+                    </ListItem>
+                    <ListItem>
+                        <Left><Text style={styles.smallTitleText}>Payment Type:</Text></Left>
+                        <Text style={styles.smallTitleText}>One time</Text>
+                    </ListItem>
+                </List>
+            </Card>
+
+        )
+        else return (
             <Card style={styles.dateCard}>
                 <CardItem bordered style={styles.cardHeader}>
                     <Text style={styles.cardTitle}>Details</Text>
@@ -108,7 +160,25 @@ class FormDetailsPage extends React.Component {
     }
 
     renderSubmissions() {
-        return (
+        if (!this.props.user.form.submissions) return (
+            <Card style={styles.dateCard}>
+                <CardItem bordered style={styles.cardHeader}>
+                    <Text style={styles.cardTitle}>Submissions to this form</Text>
+                </CardItem>
+                <List>
+                    <ListItem button onPress={() => { this.props.navigateTo({ page: 'SubmissionDetails', id: submission.id }) }} style={styles.productItem}>
+                        <Body>
+                            <View>
+                                <View>
+                                    <Text style={styles.smallTitleText}>No submissions for this form</Text>
+                                </View>
+                            </View>
+                        </Body>
+                    </ListItem>
+                </List>
+            </Card>
+        )
+        else return (
             <Card style={styles.dateCard}>
                 <CardItem bordered style={styles.cardHeader}>
                     <Text style={styles.cardTitle}>Submissions to this form</Text>
@@ -136,7 +206,6 @@ class FormDetailsPage extends React.Component {
                 </Header>
                 <Content>
                     {this.getDetailsList()}
-                    {this.getDatePickerCard()}
                     {this.renderSubmissions()}
                 </Content>
             </Container>

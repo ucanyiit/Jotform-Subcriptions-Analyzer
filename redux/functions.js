@@ -10,7 +10,7 @@ export const getAllPaymentsToDateFromSubscription = (lastDate, subscription) => 
 
 export const getAllPaymentsToDateFromSubscriptions = (lastDate, subscriptions) => {
     let totalPayment = 0;
-    for(j in subscriptions){
+    for (j in subscriptions) {
         for (i in subscriptions[j].payments) {
             if (isSmallerDate(subscriptions[j].payments[i], lastDate)) totalPayment += subscriptions[j].price;
             else break;
@@ -20,32 +20,38 @@ export const getAllPaymentsToDateFromSubscriptions = (lastDate, subscriptions) =
 }
 
 export const filterSubmission = (submission, type) => {
-    if (type == getSubscriptionFromSubmission(submission).paymentType) return 1;
+    if (type == getPaymentFromSubmission(submission).paymentType) return 1;
     return 0;
 }
 
 export const filterForm = (form, type) => {
-    for (submission of form.submissions) if (type == getSubscriptionFromSubmission(submission).paymentType) return 1;
+    for (submission of form.submissions) if (type == getPaymentFromSubmission(submission).paymentType) return 1;
     return 0;
 }
 
-export const getSubscriptionFromSubmission = (submission) => {
-    let subscription = false;
+export const getPaymentFromSubmission = (submission) => {
+    let payment = false;
     if (typeof submission === "string") return false;
-    else for (let answerID in submission.answers) {
-        if (submission.answers[answerID].paymentType) {
-            let answer = submission.answers[answerID].answer
-            for (a in answer) if (a == "1") subscription = JSON.parse(answer[a]);
+    else for (let i in submission.answers) {
+        if (submission.answers[i].paymentType) {
+            let answer = submission.answers[i].answer
+            for (a in answer) if (a == "1") payment = JSON.parse(answer[a]);
             let time = submission.created_at;
             time = time.split(' ');
-            subscription.date = getDateObject(time[0]);
-            subscription.time = time[1];
-            subscription.submission_id = submission.id;
-            subscription.form_id = submission.form_id;
-            subscription.payments = getPaymentList(subscription);
+            payment.date = getDateObject(time[0]);
+            payment.time = time[1];
+            payment.submission_id = submission.id;
+            payment.form_id = submission.form_id;
+            if (submission.answers[i].paymentType == "subscription") payment.payments = getPaymentList(payment);
         }
     }
-    return subscription
+    return payment
+}
+
+export const getSubmissionText = (submission) => {
+    if (submission.payment.paymentType == "subscription") return (`${submission.payment.period} ${submission.payment.price} ${submission.payment.currency}`);
+    if (submission.payment.paymentType == "product") return (`${submission.payment.price * submission.payment.quantity} ${submission.payment.currency}`);
+    else return (`No payment`)
 }
 
 const incrementDate = (date, increment) => {
@@ -91,7 +97,6 @@ const getPaymentList = (subscription) => {
         if (isSmallerDate(nowDate, date)) payments.push({ ...date });
         date = incrementDate(date, increment);
     }
-    console.log("payments", payments);
     return payments;
 }
 

@@ -61,7 +61,7 @@ class FormsPage extends Component {
                             onValueChange={this.onValueChange.bind(this)}>
                             <Picker.Item label="All Forms" value="all" />
                             <Picker.Item label="Subscriptions" value="subscription" />
-                            <Picker.Item label="Payments" value="payment" />
+                            <Picker.Item label="One Time Payments" value="product" />
                         </Picker>
                     </Right>
                 </Header>
