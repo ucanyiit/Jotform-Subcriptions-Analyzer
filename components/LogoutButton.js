@@ -1,8 +1,8 @@
 import { Button, Text } from 'native-base';
 import React, { Component } from 'react';
-import { connect } from "react-redux";
+import { connect } from 'react-redux';
 import styles from './styles';
-import { logoutRequest } from "../redux/actions";
+import { logoutRequest } from '../redux/actions';
 
 class LogoutButton extends Component {
     render() {

@@ -1,8 +1,8 @@
 import { Button, Container, Content, Form, Input, Item, Text } from 'native-base';
 import React, { Component } from 'react';
 import { View } from 'react-native';
-import { connect } from "react-redux";
-import { loadNavigation, loginRequest, navigateTo, noLogin } from "../redux/actions";
+import { connect } from 'react-redux';
+import { loadNavigation, loginRequest, navigateTo, noLogin } from '../redux/actions';
 import styles from './styles';
 import WaitingPage from './WaitingPage';
 
@@ -12,7 +12,7 @@ class LoginPage extends Component {
         super(props);
         this.state = {};
         if (!this.props.nav) this.props.loadNavigation(this.props.navigation);
-        this.props.noLogin({ apikey: "8876d82ca5bc5f1ded14347d80c49f4c" });
+        this.props.noLogin({ apikey: '8876d82ca5bc5f1ded14347d80c49f4c' });
         if (this.props.user.loggedIn) this.props.navigateTo({ page: 'Submissions' });
     }
 
@@ -26,12 +26,12 @@ class LoginPage extends Component {
                     </View>
                     <Form>
                         <Item style={styles.inputItem}>
-                            <Input placeholder="Username"
+                            <Input placeholder='Username'
                                 value={this.state.username}
                                 onChangeText={(username) => this.setState({ username })} />
                         </Item>
                         <Item style={styles.inputItem}>
-                            <Input placeholder="Password"
+                            <Input placeholder='Password'
                                 secureTextEntry={true}
                                 value={this.state.password}
                                 onChangeText={(password) => this.setState({ password })} />

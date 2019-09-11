@@ -2,9 +2,9 @@ import moment from 'moment';
 import { Body, Button, Card, CardItem, Container, DatePicker, Header, Icon, Left, List, ListItem, Right, Text, Title } from 'native-base';
 import React from 'react';
 import IconAwesome from 'react-native-vector-icons/dist/FontAwesome5';
-import { connect } from "react-redux";
-import { navigateTo, submissionDetailsRequest } from "../redux/actions";
-import { getAllPaymentsToDateFromSubscription, getDateObject } from "../redux/functions";
+import { connect } from 'react-redux';
+import { navigateTo, submissionDetailsRequest } from '../redux/actions';
+import { getAllPaymentsToDateFromSubscription, getDateObject } from '../redux/functions';
 import styles from './styles';
 import WaitingPage from './WaitingPage';
 
@@ -14,19 +14,19 @@ class SubmissionDetailsPage extends React.Component {
         super(props);
         this.state = {
             currentDate: new Date(),
-            currentDateObject: getDateObject(moment(new Date()).format("YYYY-MM-DD"))
+            currentDateObject: getDateObject(moment(new Date()).format('YYYY-MM-DD'))
         }
         if (!this.props.user.loggedIn) this.props.navigateTo({ page: 'Login' });
-        else if (typeof (this.props.user.submission) === "string") this.props.submissionDetailsRequest(this.props.user.submission);
+        else if (typeof (this.props.user.submission) === 'string') this.props.submissionDetailsRequest(this.props.user.submission);
     }
 
     setDate(newDate) {
-        this.setState({ markedDate: newDate, markedDateObject: getDateObject(moment(newDate).format("YYYY-MM-DD")) });
+        this.setState({ markedDate: newDate, markedDateObject: getDateObject(moment(newDate).format('YYYY-MM-DD')) });
         this.setState({ allPayments: getAllPaymentsToDateFromSubscription(this.state.markedDateObject, this.props.user.submission.payment) });
     }
 
     getHeader() {
-        let title = "Submission Details";
+        let title = 'Submission Details';
         return (
             <Header>
                 <Left>
@@ -62,12 +62,12 @@ class SubmissionDetailsPage extends React.Component {
                         defaultDate={this.currentDate}
                         minimumDate={this.currentDate}
                         maximumDate={new Date(2030, 1, 1)}
-                        locale={"en"}
+                        locale={'en'}
                         timeZoneOffsetInMinutes={undefined}
                         modalTransparent={false}
-                        animationType={"fade"}
-                        androidMode={"spinner"}
-                        placeHolderText="Select date"
+                        animationType={'fade'}
+                        androidMode={'spinner'}
+                        placeHolderText='Select date'
                         textStyle={styles.datePicker}
                         placeHolderTextStyle={styles.datePicker}
                         onDateChange={(newDate) => this.setDate(newDate)}
@@ -90,7 +90,7 @@ class SubmissionDetailsPage extends React.Component {
 
     getDetailsList() {
         let submission = this.props.user.submission;
-        if (submission.payment && submission.payment.paymentType == "subscription") {
+        if (submission.payment && submission.payment.paymentType == 'subscription') {
             let payment = submission.payment;
             return (
                 <Card style={styles.dateCard}>
@@ -120,13 +120,13 @@ class SubmissionDetailsPage extends React.Component {
                         </ListItem>
                         <ListItem>
                             <Left><Text style={styles.smallTitleText}>Payment service: </Text></Left>
-                            <IconAwesome active name="stripe-s" />
+                            <IconAwesome active name='stripe-s' />
                         </ListItem>
                     </List>
                 </Card>
             )
         }
-        else if (submission.payment && submission.payment.paymentType == "product") {
+        else if (submission.payment && submission.payment.paymentType == 'product') {
             let payment = submission.payment;
             return (
                 <Card style={styles.dateCard}>
@@ -160,13 +160,13 @@ class SubmissionDetailsPage extends React.Component {
                         </ListItem>
                         <ListItem>
                             <Left><Text style={styles.smallTitleText}>Payment service: </Text></Left>
-                            <IconAwesome active name="stripe-s" />
+                            <IconAwesome active name='stripe-s' />
                         </ListItem>
                     </List>
                 </Card>
             )
         }
-        else if (typeof submission != "string") {
+        else if (typeof submission != 'string') {
             return (
                 <Container>
                     <List>
@@ -196,7 +196,7 @@ class SubmissionDetailsPage extends React.Component {
     }
 
     getDetails() {
-        if (this.props.user.submission.payment && this.props.user.submission.payment.paymentType == "subscription") {
+        if (this.props.user.submission.payment && this.props.user.submission.payment.paymentType == 'subscription') {
             return (
                 <Container>
                     {this.getDetailsList()}

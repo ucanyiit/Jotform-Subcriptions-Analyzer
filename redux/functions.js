@@ -31,26 +31,26 @@ export const filterForm = (form, type) => {
 
 export const getPaymentFromSubmission = (submission) => {
     let payment = false;
-    if (typeof submission === "string") return false;
+    if (typeof submission === 'string') return false;
     else for (let i in submission.answers) {
         if (submission.answers[i].paymentType) {
             let answer = submission.answers[i].answer
-            for (a in answer) if (a == "1") payment = JSON.parse(answer[a]);
+            for (a in answer) if (a == '1') payment = JSON.parse(answer[a]);
             let time = submission.created_at;
             time = time.split(' ');
             payment.date = getDateObject(time[0]);
             payment.time = time[1];
             payment.submission_id = submission.id;
             payment.form_id = submission.form_id;
-            if (submission.answers[i].paymentType == "subscription") payment.payments = getPaymentList(payment);
+            if (submission.answers[i].paymentType == 'subscription') payment.payments = getPaymentList(payment);
         }
     }
     return payment
 }
 
 export const getSubmissionText = (submission) => {
-    if (submission.payment.paymentType == "subscription") return (`${submission.payment.period} ${submission.payment.price} ${submission.payment.currency}`);
-    if (submission.payment.paymentType == "product") return (`${submission.payment.price * submission.payment.quantity} ${submission.payment.currency}`);
+    if (submission.payment.paymentType == 'subscription') return (`${submission.payment.period} ${submission.payment.price} ${submission.payment.currency}`);
+    if (submission.payment.paymentType == 'product') return (`${submission.payment.price * submission.payment.quantity} ${submission.payment.currency}`);
     else return (`No payment`)
 }
 
@@ -89,10 +89,10 @@ const isSmallerDate = (date1, date2) => {
 const getPaymentList = (subscription) => {
     const lastDate = { year: 2030, month: 1, day: 1 }, nowDate = { year: 2019, month: 9, day: 9 };
     let date = { ...subscription.date }, increment = {}, payments = [];
-    if (subscription.period == "Yearly") increment = { year: 1 };
-    if (subscription.period == "Monthly") increment = { month: 1 };
-    if (subscription.period == "Weekly") increment = { day: 7 };
-    if (subscription.period == "Daily") increment = { day: 1 };
+    if (subscription.period == 'Yearly') increment = { year: 1 };
+    if (subscription.period == 'Monthly') increment = { month: 1 };
+    if (subscription.period == 'Weekly') increment = { day: 7 };
+    if (subscription.period == 'Daily') increment = { day: 1 };
     while (isSmallerDate(date, lastDate)) {
         if (isSmallerDate(nowDate, date)) payments.push({ ...date });
         date = incrementDate(date, increment);
@@ -101,6 +101,6 @@ const getPaymentList = (subscription) => {
 }
 
 export const getDateObject = (date) => {
-    date = date.split("-");
+    date = date.split('-');
     return { year: parseInt(date[0]), month: parseInt(date[1]), day: parseInt(date[2]) };
 }

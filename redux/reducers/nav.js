@@ -1,4 +1,4 @@
-import { LOAD_NAVIGATION } from "../actionTypes";
+import { LOAD_NAVIGATION } from '../actionTypes';
 
 const initialState = false;
 

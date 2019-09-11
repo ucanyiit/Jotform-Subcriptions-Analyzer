@@ -1,8 +1,8 @@
 import { Body, Container, Content, Header, Icon, Left, List, ListItem, Picker, Right, Text, Title } from 'native-base';
 import React, { Component } from 'react';
 import { View } from 'react-native';
-import { connect } from "react-redux";
-import { formsRequest, navigateTo } from "../redux/actions";
+import { connect } from 'react-redux';
+import { formsRequest, navigateTo } from '../redux/actions';
 import Logout from './LogoutButton';
 import { WaitingPage } from './pages';
 import styles from './styles';
@@ -11,7 +11,7 @@ class FormsPage extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { selected: "subscription" };
+        this.state = { selected: 'product' };
         if (!this.props.user.loggedIn) this.props.navigateTo({ page: 'Login' });
         else this.props.formsRequest(this.state.selected);
     }
@@ -55,13 +55,13 @@ class FormsPage extends Component {
                     </Body>
                     <Right>
                         <Picker
-                            mode="dropdown"
+                            mode='dropdown'
                             style={{ color: '#fff', }}
                             selectedValue={this.state.selected}
                             onValueChange={this.onValueChange.bind(this)}>
-                            <Picker.Item label="All Forms" value="all" />
-                            <Picker.Item label="Subscriptions" value="subscription" />
-                            <Picker.Item label="One Time Payments" value="product" />
+                            <Picker.Item label='All Forms' value='all' />
+                            <Picker.Item label='Subscriptions' value='subscription' />
+                            <Picker.Item label='One Time Payments' value='product' />
                         </Picker>
                     </Right>
                 </Header>

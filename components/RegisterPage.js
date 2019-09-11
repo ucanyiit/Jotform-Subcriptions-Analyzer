@@ -1,8 +1,8 @@
 import { Button, Container, Form, Input, Item, Text } from 'native-base';
 import React, { Component } from 'react';
 import { View } from 'react-native';
-import { connect } from "react-redux";
-import { navigateTo, registerRequest } from "../redux/actions";
+import { connect } from 'react-redux';
+import { navigateTo, registerRequest } from '../redux/actions';
 import styles from './styles';
 import WaitingPage from './WaitingPage';
 
@@ -22,18 +22,18 @@ class RegisterPage extends Component {
                 </View>
                 <Form>
                     <Item style={styles.inputItem}>
-                        <Input placeholder="Username"
+                        <Input placeholder='Username'
                             value={this.state.username}
                             onChangeText={(username) => this.setState({ username })} />
                     </Item>
                     <Item style={styles.inputItem} >
-                        <Input placeholder="Password"
+                        <Input placeholder='Password'
                             secureTextEntry={true}
                             value={this.state.password}
                             onChangeText={(password) => this.setState({ password })} />
                     </Item>
                     <Item style={styles.inputItem} >
-                        <Input placeholder="E-Mail"
+                        <Input placeholder='E-Mail'
                             value={this.state.email}
                             onChangeText={(email) => this.setState({ email })} />
                     </Item>

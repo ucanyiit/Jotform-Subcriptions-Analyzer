@@ -1,9 +1,9 @@
 import moment from 'moment';
 import { Body, Button, Card, CardItem, Container, Content, DatePicker, Header, Icon, Left, List, ListItem, Right, Text, Title, View } from 'native-base';
 import React from 'react';
-import { connect } from "react-redux";
-import { formDetailsRequest, navigateTo } from "../redux/actions";
-import { getAllPaymentsToDateFromSubscriptions, getDateObject, getSubmissionText } from "../redux/functions";
+import { connect } from 'react-redux';
+import { formDetailsRequest, navigateTo } from '../redux/actions';
+import { getAllPaymentsToDateFromSubscriptions, getDateObject, getSubmissionText } from '../redux/functions';
 import styles from './styles';
 import WaitingPage from './WaitingPage';
 
@@ -13,14 +13,14 @@ class FormDetailsPage extends React.Component {
         super(props);
         this.state = {
             currentDate: new Date(),
-            currentDateObject: getDateObject(moment(new Date()).format("YYYY-MM-DD"))
+            currentDateObject: getDateObject(moment(new Date()).format('YYYY-MM-DD'))
         }
         if (!this.props.user.loggedIn) this.props.navigateTo({ page: 'Login' });
-        else if (typeof (this.props.user.form) === "string") this.props.formDetailsRequest(this.props.user.form);
+        else if (typeof (this.props.user.form) === 'string') this.props.formDetailsRequest(this.props.user.form);
     }
 
     setDate(newDate) {
-        this.setState({ markedDate: newDate, markedDateObject: getDateObject(moment(newDate).format("YYYY-MM-DD")) });
+        this.setState({ markedDate: newDate, markedDateObject: getDateObject(moment(newDate).format('YYYY-MM-DD')) });
         this.setState({ allPayments: getAllPaymentsToDateFromSubscriptions(this.state.markedDateObject, this.props.user.form.payments) });
     }
 
@@ -43,12 +43,12 @@ class FormDetailsPage extends React.Component {
                         defaultDate={this.currentDate}
                         minimumDate={this.currentDate}
                         maximumDate={new Date(2030, 1, 1)}
-                        locale={"en"}
+                        locale={'en'}
                         timeZoneOffsetInMinutes={undefined}
                         modalTransparent={false}
-                        animationType={"fade"}
-                        androidMode={"spinner"}
-                        placeHolderText="Select date"
+                        animationType={'fade'}
+                        androidMode={'spinner'}
+                        placeHolderText='Select date'
                         textStyle={styles.datePicker}
                         placeHolderTextStyle={styles.datePicker}
                         onDateChange={(newDate) => this.setDate(newDate)}
@@ -82,7 +82,7 @@ class FormDetailsPage extends React.Component {
 
     getDetailsList() {
         let form = this.props.user.form;
-        if (form.paymentType && form.paymentType == "subscription") return (
+        if (form.paymentType && form.paymentType == 'subscription') return (
             <Content>
                 <Card style={styles.dateCard}>
                     <CardItem bordered style={styles.cardHeader}>
@@ -110,7 +110,7 @@ class FormDetailsPage extends React.Component {
                 {this.getDatePickerCard()}
             </Content>
         )
-        else if (form.paymentType && form.paymentType == "product") return (
+        else if (form.paymentType && form.paymentType == 'product') return (
             <Card style={styles.dateCard}>
                 <CardItem bordered style={styles.cardHeader}>
                     <Text style={styles.cardTitle}>Details</Text>

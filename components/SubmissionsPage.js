@@ -1,9 +1,9 @@
 import { Body, Container, Content, Header, Left, List, ListItem, Picker, Right, Text, Title } from 'native-base';
 import React, { Component } from 'react';
 import { View } from 'react-native';
-import { connect } from "react-redux";
-import { navigateTo, submissonsRequest } from "../redux/actions";
-import { getSubmissionText } from "../redux/functions";
+import { connect } from 'react-redux';
+import { navigateTo, submissonsRequest } from '../redux/actions';
+import { getSubmissionText } from '../redux/functions';
 import Logout from './LogoutButton';
 import styles from './styles';
 import WaitingPage from './WaitingPage';
@@ -12,7 +12,7 @@ class SubmissionsPage extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { selected: "product" };
+        this.state = { selected: 'product' };
         if (!this.props.user.loggedIn) this.props.navigateTo({ page: 'Login' });
         else this.props.submissonsRequest(this.state.selected);
     }
@@ -56,13 +56,13 @@ class SubmissionsPage extends Component {
                     </Body>
                     <Right>
                         <Picker
-                            mode="dropdown"
+                            mode='dropdown'
                             style={{ color: '#fff', }}
                             selectedValue={this.state.selected}
                             onValueChange={this.onValueChange.bind(this)}>
-                            <Picker.Item label="All Submissions" value="all" />
-                            <Picker.Item label="Subscriptions" value="subscription" />
-                            <Picker.Item label="One Time Payments" value="product" />
+                            <Picker.Item label='All Submissions' value='all' />
+                            <Picker.Item label='Subscriptions' value='subscription' />
+                            <Picker.Item label='One Time Payments' value='product' />
                         </Picker>
                     </Right>
                 </Header>
