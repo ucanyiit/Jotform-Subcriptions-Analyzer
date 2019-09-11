@@ -31,7 +31,23 @@ class FormDetailsPage extends React.Component {
         return text
     }
 
-    getDatePickerCard() {
+    renderHeader() {
+        return (
+            <Header>
+                <Left>
+                    <Button transparent onPress={() => this.props.navigation.goBack()}>
+                        <Icon name='arrow-back' />
+                    </Button>
+                </Left>
+                <Body>
+                    <Title>{this.props.user.form.title}</Title>
+                </Body>
+                <Right />
+            </Header>
+        )
+    }
+
+    renderDatePickerCard() {
         return (
             <Card style={styles.dateCard}>
                 <CardItem bordered style={styles.cardHeader}>
@@ -69,74 +85,41 @@ class FormDetailsPage extends React.Component {
         return (
             <ListItem button onPress={() => { this.props.navigateTo({ page: 'SubmissionDetails', id: submission.id }) }} style={styles.productItem}>
                 <Body>
-                    <View>
-                        <View>
-                            <Text style={styles.smallTitleText}>{getSubmissionText(submission)}</Text>
-                            <Text style={styles.smallSubtitleText}>{submission.created_at}</Text>
-                        </View>
-                    </View>
+                    <Text style={styles.smallTitleText}>{getSubmissionText(submission)}</Text>
+                    <Text style={styles.smallSubtitleText}>{submission.created_at}</Text>
                 </Body>
             </ListItem>
         );
     }
 
-    getDetailsList() {
-        let form = this.props.user.form;
-        if (form.paymentType && form.paymentType == 'subscription') return (
-            <Content>
-                <Card style={styles.dateCard}>
-                    <CardItem bordered style={styles.cardHeader}>
-                        <Text style={styles.cardTitle}>Details</Text>
-                    </CardItem>
-                    <List>
-                        <ListItem>
-                            <Left><Text style={styles.smallTitleText}>Form: </Text></Left>
-                            <Text style={styles.smallTitleText}>{form.title}</Text>
-                        </ListItem>
-                        <ListItem>
-                            <Left><Text style={styles.smallTitleText}>Form ID: </Text></Left>
-                            <Text style={styles.smallTitleText}>{form.id}</Text>
-                        </ListItem>
-                        <ListItem>
-                            <Left><Text style={styles.smallTitleText}>Created at:</Text></Left>
-                            <Text style={styles.smallTitleText}>{form.created_at}</Text>
-                        </ListItem>
-                        <ListItem>
-                            <Left><Text style={styles.smallTitleText}>Payment Type:</Text></Left>
-                            <Text style={styles.smallTitleText}>Subscription</Text>
-                        </ListItem>
-                    </List>
-                </Card>
-                {this.getDatePickerCard()}
-            </Content>
-        )
-        else if (form.paymentType && form.paymentType == 'product') return (
-            <Card style={styles.dateCard}>
-                <CardItem bordered style={styles.cardHeader}>
-                    <Text style={styles.cardTitle}>Details</Text>
-                </CardItem>
-                <List>
-                    <ListItem>
-                        <Left><Text style={styles.smallTitleText}>Form: </Text></Left>
-                        <Text style={styles.smallTitleText}>{form.title}</Text>
-                    </ListItem>
-                    <ListItem>
-                        <Left><Text style={styles.smallTitleText}>Form ID: </Text></Left>
-                        <Text style={styles.smallTitleText}>{form.id}</Text>
-                    </ListItem>
-                    <ListItem>
-                        <Left><Text style={styles.smallTitleText}>Created at:</Text></Left>
-                        <Text style={styles.smallTitleText}>{form.created_at}</Text>
-                    </ListItem>
-                    <ListItem>
-                        <Left><Text style={styles.smallTitleText}>Payment Type:</Text></Left>
-                        <Text style={styles.smallTitleText}>One time</Text>
-                    </ListItem>
-                </List>
-            </Card>
+    getTotalEarnings(payments) {
+        let total = 0;
+        for (payment of payments) total += parseFloat(payment.total);
+        return total;
+    }
 
+    renderDetailsList() {
+        let form = this.props.user.form, paymentType = "";
+        if (form.paymentType && form.paymentType == 'subscription') details = (
+            <ListItem>
+                <Left><Text style={styles.smallTitleTexpt}>Payment Type:</Text></Left>
+                <Text style={styles.smallTitleText}>Subscription</Text>
+            </ListItem>
         )
-        else return (
+        else if (form.paymentType && form.paymentType == 'product') details = (
+            <View>
+                <ListItem>
+                    <Left><Text style={styles.smallTitleTexpt}>Payment Type:</Text></Left>
+                    <Text style={styles.smallTitleText}>One Time Payment</Text>
+                </ListItem>
+                <ListItem>
+                    <Left><Text style={styles.smallTitleTexpt}>Total Revenue:</Text></Left>
+                    <Text style={styles.smallTitleText}>{this.getTotalEarnings(form.payments)}</Text>
+                </ListItem>
+            </View>
+        )
+
+        return (
             <Card style={styles.dateCard}>
                 <CardItem bordered style={styles.cardHeader}>
                     <Text style={styles.cardTitle}>Details</Text>
@@ -154,6 +137,7 @@ class FormDetailsPage extends React.Component {
                         <Left><Text style={styles.smallTitleText}>Created at:</Text></Left>
                         <Text style={styles.smallTitleText}>{form.created_at}</Text>
                     </ListItem>
+                    {form.paymentType && details}
                 </List>
             </Card>
         )
@@ -168,11 +152,7 @@ class FormDetailsPage extends React.Component {
                 <List>
                     <ListItem button onPress={() => { this.props.navigateTo({ page: 'SubmissionDetails', id: submission.id }) }} style={styles.productItem}>
                         <Body>
-                            <View>
-                                <View>
-                                    <Text style={styles.smallTitleText}>No submissions for this form</Text>
-                                </View>
-                            </View>
+                            <Text style={styles.smallTitleText}>No submissions for this form</Text>
                         </Body>
                     </ListItem>
                 </List>
@@ -190,31 +170,18 @@ class FormDetailsPage extends React.Component {
         )
     }
 
-    renderDetails() {
-        return (
+    render() {
+        if (this.props.user.isLoading) return <WaitingPage />
+        else return (
             <Container>
-                <Header>
-                    <Left>
-                        <Button transparent onPress={() => this.props.navigation.goBack()}>
-                            <Icon name='arrow-back' />
-                        </Button>
-                    </Left>
-                    <Body>
-                        <Title>{this.props.user.form.title}</Title>
-                    </Body>
-                    <Right />
-                </Header>
+                {this.renderHeader()}
                 <Content>
-                    {this.getDetailsList()}
+                    {this.props.user.form.paymentType == "subscription" && this.renderDatePickerCard()}
+                    {this.renderDetailsList()}
                     {this.renderSubmissions()}
                 </Content>
             </Container>
         )
-    }
-
-    render() {
-        if (this.props.user.isLoading) return <WaitingPage />
-        else return this.renderDetails();
     }
 }
 

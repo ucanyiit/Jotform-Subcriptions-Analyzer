@@ -1,6 +1,5 @@
-import { Body, Container, Content, Header, Icon, Left, List, ListItem, Picker, Right, Text, Title } from 'native-base';
+import { Body, Container, Content, Header, Left, List, ListItem, Picker, Right, Text, Title } from 'native-base';
 import React, { Component } from 'react';
-import { View } from 'react-native';
 import { connect } from 'react-redux';
 import { formsRequest, navigateTo } from '../redux/actions';
 import Logout from './LogoutButton';
@@ -32,38 +31,44 @@ class FormsPage extends Component {
         );
     }
 
-    renderForms = () => {
-        return (<List>
-            {this.props.user.forms && this.props.user.forms.map(data => { return this.renderRow(data) })}
-        </List>)
+    renderHeader() {
+        return (
+            <Header>
+                <Left />
+                <Body>
+                    <Title>Forms</Title>
+                </Body>
+                <Right>
+                    <Picker
+                        mode='dropdown'
+                        style={{ color: '#fff', }}
+                        selectedValue={this.state.selected}
+                        onValueChange={this.onValueChange.bind(this)}>
+                        <Picker.Item label='All Forms' value='all' />
+                        <Picker.Item label='Subscriptions' value='subscription' />
+                        <Picker.Item label='One Time Payments' value='product' />
+                    </Picker>
+                </Right>
+            </Header>
+        )
+    }
+
+    renderForms() {
+        if (this.props.user.isLoading) return <WaitingPage />
+        else return (
+            <Content>
+                <List>
+                    {this.props.user.forms && this.props.user.forms.map(data => { return this.renderRow(data) })}
+                </List>
+            </Content>
+        )
     }
 
     render() {
-        let content;
-        if (this.props.user.isLoading) content = <WaitingPage />
-        else content = this.renderForms();
         return (
             <Container>
-                <Header>
-                    <Left />
-                    <Body>
-                        <Title>Forms</Title>
-                    </Body>
-                    <Right>
-                        <Picker
-                            mode='dropdown'
-                            style={{ color: '#fff', }}
-                            selectedValue={this.state.selected}
-                            onValueChange={this.onValueChange.bind(this)}>
-                            <Picker.Item label='All Forms' value='all' />
-                            <Picker.Item label='Subscriptions' value='subscription' />
-                            <Picker.Item label='One Time Payments' value='product' />
-                        </Picker>
-                    </Right>
-                </Header>
-                <Content>
-                    {content}
-                </Content>
+                {this.renderHeader()}
+                {this.renderForms()}
                 <Logout />
             </Container>
         )

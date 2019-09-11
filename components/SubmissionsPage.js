@@ -1,6 +1,5 @@
 import { Body, Container, Content, Header, Left, List, ListItem, Picker, Right, Text, Title } from 'native-base';
 import React, { Component } from 'react';
-import { View } from 'react-native';
 import { connect } from 'react-redux';
 import { navigateTo, submissonsRequest } from '../redux/actions';
 import { getSubmissionText } from '../redux/functions';
@@ -22,7 +21,7 @@ class SubmissionsPage extends Component {
         this.props.submissonsRequest(value);
     }
 
-    renderRow = (submission) => {
+    renderRow(submission) {
         return (
             <ListItem button onPress={() => { this.props.navigateTo({ page: 'SubmissionDetails', id: submission.id }) }} style={styles.productItem}>
                 <Body>
@@ -30,41 +29,47 @@ class SubmissionsPage extends Component {
                     <Text style={styles.smallSubtitleText}>{submission.form.title}</Text>
                 </Body>
             </ListItem>
-        );
+        )
     }
 
-    renderSubmissions = () => {
-        return (<List>
-            {this.props.user.submissions && this.props.user.submissions.map(data => { return this.renderRow(data) })}
-        </List>)
+    renderHeader() {
+        return (
+            <Header>
+                <Left />
+                <Body>
+                    <Title>Submissions</Title>
+                </Body>
+                <Right>
+                    <Picker
+                        mode='dropdown'
+                        style={{ color: '#fff', }}
+                        selectedValue={this.state.selected}
+                        onValueChange={this.onValueChange.bind(this)}>
+                        <Picker.Item label='All Submissions' value='all' />
+                        <Picker.Item label='Subscriptions' value='subscription' />
+                        <Picker.Item label='One Time Payments' value='product' />
+                    </Picker>
+                </Right>
+            </Header>
+        )
+    }
+
+    renderSubmissions() {
+        if (this.props.user.isLoading) return <WaitingPage />
+        else return (
+            <Content>
+                <List>
+                    {this.props.user.submissions && this.props.user.submissions.map(data => { return this.renderRow(data) })}
+                </List>
+            </Content>
+        )
     }
 
     render() {
-        let content;
-        if (this.props.user.isLoading) content = <WaitingPage />
-        else content = this.renderSubmissions();
         return (
             <Container>
-                <Header>
-                    <Left />
-                    <Body>
-                        <Title>Submissions</Title>
-                    </Body>
-                    <Right>
-                        <Picker
-                            mode='dropdown'
-                            style={{ color: '#fff', }}
-                            selectedValue={this.state.selected}
-                            onValueChange={this.onValueChange.bind(this)}>
-                            <Picker.Item label='All Submissions' value='all' />
-                            <Picker.Item label='Subscriptions' value='subscription' />
-                            <Picker.Item label='One Time Payments' value='product' />
-                        </Picker>
-                    </Right>
-                </Header>
-                <Content>
-                    {content}
-                </Content>
+                {this.renderHeader()}
+                {this.renderSubmissions()}
                 <Logout />
             </Container>
         )

@@ -38,15 +38,11 @@ export const getPaymentFromSubmission = (submission) => {
             if (submission.answers[i].paymentType == 'subscription') {
                 for (a in answer) if (a == '1') payment = JSON.parse(answer[a]);
                 payment.payments = getPaymentList(payment);
-                console.log("subs", payment);
             }
             else if (submission.answers[i].paymentType == 'product') {
                 let products = [];
                 for (a in answer) if (JSON.parse(answer[a]).price) products.push(JSON.parse(answer[a]));
-                console.log("-----");
-                console.log(JSON.parse(answer["paymentArray"]));
                 payment = {currency: products[0].currency, products, total: JSON.parse(answer["paymentArray"]).total};
-                console.log(payment);
             }
             time = time.split(' ');
             payment.date = getDateObject(time[0]);
@@ -54,6 +50,7 @@ export const getPaymentFromSubmission = (submission) => {
             payment.submission_id = submission.id;
             payment.form_id = submission.form_id;
             payment.paymentType = submission.answers[i].paymentType
+            payment.info = JSON.parse(answer.paymentArray);
         } 
     }
     return payment
