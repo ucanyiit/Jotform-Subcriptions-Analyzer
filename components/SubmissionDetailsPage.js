@@ -49,7 +49,6 @@ class SubmissionDetailsPage extends React.Component {
     }
 
     renderDatePickerCard() {
-        let earnings = this.getEarnings();
         return (
             <Card style={styles.dateCard}>
                 <CardItem bordered style={styles.cardHeader}>
@@ -76,7 +75,7 @@ class SubmissionDetailsPage extends React.Component {
                 </CardItem>
                 <CardItem bordered>
                     <Left />
-                    {earnings}
+                    {this.getEarnings()}
                     <Right />
                 </CardItem>
             </Card>
@@ -202,8 +201,8 @@ class SubmissionDetailsPage extends React.Component {
 
         return (
             <View>
-                {detailsList}
                 {additionalInfo}
+                {detailsList}
             </View>
         )
     }

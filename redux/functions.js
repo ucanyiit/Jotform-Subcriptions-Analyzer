@@ -34,24 +34,18 @@ export const getPaymentFromSubmission = (submission) => {
     if (typeof submission === 'string') return false;
     else for (let i in submission.answers) {
         if (submission.answers[i].paymentType) {
-            let answer = submission.answers[i].answer, time = submission.created_at;
+            let answer = submission.answers[i].answer, time = submission.created_at.split(' ');
+            let tmp = { date: getDateObject(time[0]), time: time[1], submission_id: submission.id, form_id: submission.form_id, paymentType: submission.answers[i].paymentType, info: JSON.parse(answer.paymentArray) }
             if (submission.answers[i].paymentType == 'subscription') {
-                for (a in answer) if (a == '1') payment = JSON.parse(answer[a]);
+                for (a in answer) if (a == '1') payment = { ...tmp, ...JSON.parse(answer[a]) };
                 payment.payments = getPaymentList(payment);
             }
             else if (submission.answers[i].paymentType == 'product') {
                 let products = [];
                 for (a in answer) if (JSON.parse(answer[a]).price) products.push(JSON.parse(answer[a]));
-                payment = {currency: products[0].currency, products, total: JSON.parse(answer["paymentArray"]).total};
+                payment = { ...tmp, currency: products[0].currency, products, total: JSON.parse(answer["paymentArray"]).total };
             }
-            time = time.split(' ');
-            payment.date = getDateObject(time[0]);
-            payment.time = time[1];
-            payment.submission_id = submission.id;
-            payment.form_id = submission.form_id;
-            payment.paymentType = submission.answers[i].paymentType
-            payment.info = JSON.parse(answer.paymentArray);
-        } 
+        }
     }
     return payment
 }
@@ -98,7 +92,10 @@ const getPaymentList = (subscription) => {
     const lastDate = { year: 2030, month: 1, day: 1 }, nowDate = { year: 2019, month: 9, day: 9 };
     let date = { ...subscription.date }, increment = {}, payments = [];
     if (subscription.period == 'Yearly') increment = { year: 1 };
+    if (subscription.period == 'Quarterly') increment = { month: 3 };
+    if (subscription.period == 'Bi-Monthly') increment = { month: 2 };
     if (subscription.period == 'Monthly') increment = { month: 1 };
+    if (subscription.period == 'Bi-Weekly') increment = { day: 14 };
     if (subscription.period == 'Weekly') increment = { day: 7 };
     if (subscription.period == 'Daily') increment = { day: 1 };
     while (isSmallerDate(date, lastDate)) {
