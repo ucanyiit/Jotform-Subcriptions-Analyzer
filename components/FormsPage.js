@@ -25,12 +25,8 @@ class FormsPage extends Component {
         return (
             <ListItem button onPress={() => { this.props.navigateTo({ page: 'FormDetails', id: form.id }) }} style={styles.productItem}>
                 <Body>
-                    <View>
-                        <View>
-                            <Text style={styles.smallTitleText}>{form.title}</Text>
-                            <Text style={styles.smallSubtitleText}>{form.url}</Text>
-                        </View>
-                    </View>
+                    <Text style={styles.smallTitleText}>{form.title}</Text>
+                    <Text style={styles.smallSubtitleText}>{form.url}</Text>
                 </Body>
             </ListItem>
         );

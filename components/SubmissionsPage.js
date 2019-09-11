@@ -26,12 +26,8 @@ class SubmissionsPage extends Component {
         return (
             <ListItem button onPress={() => { this.props.navigateTo({ page: 'SubmissionDetails', id: submission.id }) }} style={styles.productItem}>
                 <Body>
-                    <View>
-                        <View>
-                            <Text style={styles.smallTitleText}>{getSubmissionText(submission)}</Text>
-                            <Text style={styles.smallSubtitleText}>{submission.form.title}</Text>
-                        </View>
-                    </View>
+                    <Text style={styles.smallTitleText}>{getSubmissionText(submission)}</Text>
+                    <Text style={styles.smallSubtitleText}>{submission.form.title}</Text>
                 </Body>
             </ListItem>
         );

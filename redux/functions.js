@@ -34,23 +34,34 @@ export const getPaymentFromSubmission = (submission) => {
     if (typeof submission === 'string') return false;
     else for (let i in submission.answers) {
         if (submission.answers[i].paymentType) {
-            let answer = submission.answers[i].answer
-            for (a in answer) if (a == '1') payment = JSON.parse(answer[a]);
-            let time = submission.created_at;
+            let answer = submission.answers[i].answer, time = submission.created_at;
+            if (submission.answers[i].paymentType == 'subscription') {
+                for (a in answer) if (a == '1') payment = JSON.parse(answer[a]);
+                payment.payments = getPaymentList(payment);
+                console.log("subs", payment);
+            }
+            else if (submission.answers[i].paymentType == 'product') {
+                let products = [];
+                for (a in answer) if (JSON.parse(answer[a]).price) products.push(JSON.parse(answer[a]));
+                console.log("-----");
+                console.log(JSON.parse(answer["paymentArray"]));
+                payment = {currency: products[0].currency, products, total: JSON.parse(answer["paymentArray"]).total};
+                console.log(payment);
+            }
             time = time.split(' ');
             payment.date = getDateObject(time[0]);
             payment.time = time[1];
             payment.submission_id = submission.id;
             payment.form_id = submission.form_id;
-            if (submission.answers[i].paymentType == 'subscription') payment.payments = getPaymentList(payment);
-        }
+            payment.paymentType = submission.answers[i].paymentType
+        } 
     }
     return payment
 }
 
 export const getSubmissionText = (submission) => {
     if (submission.payment.paymentType == 'subscription') return (`${submission.payment.period} ${submission.payment.price} ${submission.payment.currency}`);
-    if (submission.payment.paymentType == 'product') return (`${submission.payment.price * submission.payment.quantity} ${submission.payment.currency}`);
+    if (submission.payment.paymentType == 'product') return (`${submission.payment.total} ${submission.payment.currency}`);
     else return (`No payment`)
 }
 

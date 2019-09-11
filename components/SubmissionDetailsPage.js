@@ -25,7 +25,7 @@ class SubmissionDetailsPage extends React.Component {
         this.setState({ allPayments: getAllPaymentsToDateFromSubscription(this.state.markedDateObject, this.props.user.submission.payment) });
     }
 
-    getHeader() {
+    renderHeader() {
         let title = 'Submission Details';
         return (
             <Header>
@@ -49,7 +49,7 @@ class SubmissionDetailsPage extends React.Component {
         return text
     }
 
-    getDatePickerCard() {
+    renderDatePickerCard() {
         let earnings = this.getEarnings();
         return (
             <Card style={styles.dateCard}>
@@ -88,7 +88,29 @@ class SubmissionDetailsPage extends React.Component {
         return `${date.year} ${date.month} ${date.day}`
     }
 
-    getDetailsList() {
+    renderProductRow = (product) => {
+        return (
+            <ListItem style={styles.productItem}>
+                <Left><Text style={styles.smallTitleText}>{product.name} ( {product.price} {product.currency} )</Text></Left>
+                <Text style={styles.smallTitleText}>{product.quantity}</Text>
+            </ListItem>
+        );
+    }
+
+    renderProducts = () => {
+        return (
+            <Card style={styles.dateCard}>
+                <CardItem bordered style={styles.cardHeader}>
+                    <Text style={styles.cardTitle}>Products Sold</Text>
+                </CardItem><List>
+                    {this.props.user.submission.payment.products.map(data => { return this.renderProductRow(data) })}
+                </List>
+            </Card>
+        )
+    }
+
+
+    renderDetailsList() {
         let submission = this.props.user.submission;
         if (submission.payment && submission.payment.paymentType == 'subscription') {
             let payment = submission.payment;
@@ -144,15 +166,7 @@ class SubmissionDetailsPage extends React.Component {
                         </ListItem>
                         <ListItem>
                             <Left><Text style={styles.smallTitleText}>Total Payment:</Text></Left>
-                            <Text style={styles.smallTitleText}>{payment.price * payment.quantity} {payment.currency}</Text>
-                        </ListItem>
-                        <ListItem>
-                            <Left><Text style={styles.smallTitleText}>Product name: </Text></Left>
-                            <Text style={styles.smallTitleText}>{payment.name}</Text>
-                        </ListItem>
-                        <ListItem>
-                            <Left><Text style={styles.smallTitleText}>Product quantity: </Text></Left>
-                            <Text style={styles.smallTitleText}>{payment.quantity}</Text>
+                            <Text style={styles.smallTitleText}>{payment.total} {payment.currency}</Text>
                         </ListItem>
                         <ListItem>
                             <Left><Text style={styles.smallTitleText}>Payment date: </Text></Left>
@@ -195,23 +209,27 @@ class SubmissionDetailsPage extends React.Component {
 
     }
 
-    getDetails() {
-        if (this.props.user.submission.payment && this.props.user.submission.payment.paymentType == 'subscription') {
-            return (
-                <Container>
-                    {this.getDetailsList()}
-                    {this.getDatePickerCard()}
-                </Container>
-            )
-        }
-        else return this.getDetailsList()
+    renderDetails() {
+        if (this.props.user.submission.payment && this.props.user.submission.payment.paymentType == 'subscription') return (
+            <Container>
+                {this.renderDetailsList()}
+                {this.renderDatePickerCard()}
+            </Container>
+        )
+        if (this.props.user.submission.payment && this.props.user.submission.payment.paymentType == "product") return (
+            <Container>
+                {this.renderDetailsList()}
+                {this.renderProducts()}
+            </Container>
+        )
+        else return this.renderDetailsList()
     }
 
     render() {
         return (
             <Container>
-                {this.getHeader()}
-                {this.getDetails()}
+                {this.renderHeader()}
+                {this.renderDetails()}
             </Container>
         )
     }
