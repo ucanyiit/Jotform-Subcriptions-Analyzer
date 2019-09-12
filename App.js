@@ -3,7 +3,7 @@ import { createAppContainer, createDrawerNavigator, createStackNavigator } from 
 import { Provider } from 'react-redux';
 import { applyMiddleware, createStore } from 'redux';
 import thunk from 'redux-thunk';
-import { FormDetailsPage, FormsPage, LoginPage, RegisterPage, SubmissionDetailsPage, SubmissionsPage } from './components/pages';
+import { FormDetailsPage, FormDetailsTimeline, FormsPage, LoginPage, RegisterPage, SubmissionDetailsPage, SubmissionsPage } from './components/pages';
 import reducers from './redux/reducers';
 
 export const FormsNav = createStackNavigator(
@@ -13,6 +13,9 @@ export const FormsNav = createStackNavigator(
         },
         FormDetails: {
             screen: FormDetailsPage
+        },
+        FormTimeline: {
+            screen: FormDetailsTimeline,
         },
         SubmissionDetails: {
             screen: SubmissionDetailsPage

@@ -3,7 +3,7 @@ import { Body, Button, Card, CardItem, Container, Content, DatePicker, Header, I
 import React from 'react';
 import { connect } from 'react-redux';
 import { formDetailsRequest, navigateTo } from '../redux/actions';
-import { getAllPaymentsToDateFromSubscriptions, getDateObject, getSubmissionText } from '../redux/functions';
+import { getAllPaymentsToDateFromSubscriptions, getDateObject, getPaymentText } from '../redux/functions';
 import styles from './styles';
 import WaitingPage from './WaitingPage';
 
@@ -77,6 +77,13 @@ class FormDetailsPage extends React.Component {
                     {this.getEarnings()}
                     <Right />
                 </CardItem>
+                <CardItem bordered>
+                    <Left />
+                    <Button style={styles.button} block onPress={() => this.props.navigateTo({ page: 'FormTimeline' })}>
+                        <Text>Show Timeline</Text>
+                    </Button>
+                    <Right />
+                </CardItem>
             </Card>
         )
     }
@@ -85,7 +92,7 @@ class FormDetailsPage extends React.Component {
         return (
             <ListItem button onPress={() => { this.props.navigateTo({ page: 'SubmissionDetails', id: submission.id }) }} style={styles.productItem}>
                 <Body>
-                    <Text style={styles.smallTitleText}>{getSubmissionText(submission)}</Text>
+                    <Text style={styles.smallTitleText}>{getPaymentText(submission.payment)}</Text>
                     <Text style={styles.smallSubtitleText}>{submission.created_at}</Text>
                 </Body>
             </ListItem>

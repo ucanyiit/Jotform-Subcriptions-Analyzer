@@ -2,7 +2,7 @@ import { Body, Container, Content, Header, Left, List, ListItem, Picker, Right, 
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { navigateTo, submissonsRequest } from '../redux/actions';
-import { getSubmissionText } from '../redux/functions';
+import { getPaymentText } from '../redux/functions';
 import Logout from './LogoutButton';
 import styles from './styles';
 import WaitingPage from './WaitingPage';
@@ -25,7 +25,7 @@ class SubmissionsPage extends Component {
         return (
             <ListItem button onPress={() => { this.props.navigateTo({ page: 'SubmissionDetails', id: submission.id }) }} style={styles.productItem}>
                 <Body>
-                    <Text style={styles.smallTitleText}>{getSubmissionText(submission)}</Text>
+                    <Text style={styles.smallTitleText}>{getPaymentText(submission.payment)}</Text>
                     <Text style={styles.smallSubtitleText}>{submission.form.title}</Text>
                 </Body>
             </ListItem>

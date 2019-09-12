@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 export const getAllPaymentsToDateFromSubscription = (lastDate, subscription) => {
     const payments = subscription.payments;
     let totalPayment = 0;
@@ -17,6 +19,33 @@ export const getAllPaymentsToDateFromSubscriptions = (lastDate, subscriptions) =
         }
     }
     return totalPayment;
+}
+
+const getCompareableDateString = (payment) => {
+    if (payment.month < 10) payment.month = "0" + payment.month;
+    if (payment.day < 10) payment.day = "0" + payment.day;
+    return payment.year + " " + payment.month + " " + payment.day;
+}
+
+const getTimeString = (time) => {
+    return moment(Date.parse(time)).format("MMM Do YYYY");
+}
+
+export const getLastXPaymentsFromSubscriptions = (paymentNumber, subscriptions) => {
+
+    let payments = [], lastXPayments = [];
+    for (i in subscriptions) for (j in subscriptions[i].payments) payments.push({
+        date: getCompareableDateString(subscriptions[i].payments[j]),
+        time: getTimeString(getCompareableDateString(subscriptions[i].payments[j])),
+        title: getPaymentText(subscriptions[i]),
+        description: subscriptions[i].info.firstname + " " + subscriptions[i].info.lastname,
+        submission_id: subscriptions[i].submission_id
+    })
+    payments.sort((b, a) => { return b.date > a.date });
+
+    for (let i = 0; i < paymentNumber; i++) lastXPayments.push({time: payments[i].time, title: payments[i].title, description: payments[i].description});
+    console.log(lastXPayments);
+    return lastXPayments;
 }
 
 export const filterSubmission = (submission, type) => {
@@ -50,9 +79,9 @@ export const getPaymentFromSubmission = (submission) => {
     return payment
 }
 
-export const getSubmissionText = (submission) => {
-    if (submission.payment.paymentType == 'subscription') return (`${submission.payment.period} ${submission.payment.price} ${submission.payment.currency}`);
-    if (submission.payment.paymentType == 'product') return (`${submission.payment.total} ${submission.payment.currency}`);
+export const getPaymentText = (payment) => {
+    if (payment.paymentType == 'subscription') return (`${payment.period} ${payment.price} ${payment.currency}`);
+    if (payment.paymentType == 'product') return (`${payment.total} ${payment.currency}`);
     else return (`No payment`)
 }
 
