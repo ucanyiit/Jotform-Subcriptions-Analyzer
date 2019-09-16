@@ -1,7 +1,7 @@
 import { Body, Container, Content, Header, Left, List, ListItem, Picker, Right, Text, Title } from 'native-base';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { formsRequest, navigateTo } from '../redux/actions';
+import { loadNavigation, formsRequest, navigateTo } from '../redux/actions';
 import Logout from './LogoutButton';
 import { WaitingPage } from './pages';
 import styles from './styles';
@@ -11,6 +11,8 @@ class FormsPage extends Component {
     constructor(props) {
         super(props);
         this.state = { selected: 'subscription' };
+        if (!this.props.nav) this.props.loadNavigation(this.props.navigation);
+
         if (!this.props.user.loggedIn) this.props.navigateTo({ page: 'Login' });
         else this.props.formsRequest(this.state.selected);
     }
@@ -24,8 +26,8 @@ class FormsPage extends Component {
         return (
             <ListItem button onPress={() => { this.props.navigateTo({ page: 'FormDetails', id: form.id }) }} style={styles.productItem}>
                 <Body>
-                    <Text style={styles.smallTitleText}>{form.title}</Text>
-                    <Text style={styles.smallSubtitleText}>{form.url}</Text>
+                    <Text style={styles.listTitleText}>{form.title}</Text>
+                    <Text style={styles.listSubtitleText}>{form.url}</Text>
                 </Body>
             </ListItem>
         );
@@ -33,7 +35,7 @@ class FormsPage extends Component {
 
     renderHeader() {
         return (
-            <Header>
+            <Header androidStatusBarColor='#fa8900' style={styles.orangeBackground}>
                 <Left />
                 <Body>
                     <Title>Forms</Title>
@@ -66,7 +68,7 @@ class FormsPage extends Component {
 
     render() {
         return (
-            <Container>
+            <Container style={styles.darkBackground}>
                 {this.renderHeader()}
                 {this.renderForms()}
                 <Logout />

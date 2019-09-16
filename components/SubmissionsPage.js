@@ -25,8 +25,8 @@ class SubmissionsPage extends Component {
         return (
             <ListItem button onPress={() => { this.props.navigateTo({ page: 'SubmissionDetails', id: submission.id }) }} style={styles.productItem}>
                 <Body>
-                    <Text style={styles.smallTitleText}>{getPaymentText(submission.payment)}</Text>
-                    <Text style={styles.smallSubtitleText}>{submission.form.title}</Text>
+                    <Text style={styles.listTitleText}>{getPaymentText(submission.payment)}</Text>
+                    <Text style={styles.listSubtitleText}>{submission.form.title}</Text>
                 </Body>
             </ListItem>
         )
@@ -34,7 +34,7 @@ class SubmissionsPage extends Component {
 
     renderHeader() {
         return (
-            <Header>
+            <Header androidStatusBarColor='#fa8900' style={styles.orangeBackground}>
                 <Left />
                 <Body>
                     <Title>Submissions</Title>
@@ -67,7 +67,7 @@ class SubmissionsPage extends Component {
 
     render() {
         return (
-            <Container>
+            <Container style={styles.darkBackground}>
                 {this.renderHeader()}
                 {this.renderSubmissions()}
                 <Logout />

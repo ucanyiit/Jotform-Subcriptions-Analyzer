@@ -1,63 +1,87 @@
 import { StyleSheet } from 'react-native';
 
 module.exports = StyleSheet.create({
-    priceText: {
-        color: '#777',
-        fontSize: 16
+    darkBackground: {
+        backgroundColor: '#27221D'
     },
-    nameText: {
-        color: '#777',
-        fontSize: 14
+    dark2Background: {
+        backgroundColor: '#434343'
     },
-    productText: {
-        fontSize: 18
+    lightBackground: {
+        backgroundColor: '#CCCAAF'
     },
-    smallTitleText: {
-        fontSize: 18,
-        marginTop: 1
-    },
-    smallSubtitleText: {
-        color: '#777',
-        fontSize: 14
-    },
-    productItem: {
-        marginTop: 8
-    },
-    errorText: {
-        color: '#d44',
-        fontSize: 20,
-        marginTop: 60
-    },
-    pleaseText: {
-        fontSize: 20,
-        marginTop: 60
-    },
+    orangeBackground: {
+        backgroundColor: '#fa8900'
+    },    
+    redBackground: {
+        backgroundColor: '#C53A2A'
+    },    
+    
     button: {
+        backgroundColor: '#fa8900',
         marginLeft: 24,
         marginRight: 24,
         marginTop: 12
     },
-    inputItem: {
-        marginLeft: 24,
-        marginRight: 24,
-        marginTop: 6,
-    },
-    dateText: {
-        fontSize: 24
-    },
     datePicker: {
         fontSize: 24,
-        color: '#08f'
+        color: '#fa8900'
     },
-    dateCard: {
+        
+    marginedContent: {
+        marginLeft: 24,
+        marginRight: 24,
+        marginTop: 66
+    },
+    marginedContent2: {
+        marginLeft: 24,
+        marginRight: 24,
+        height: 48
+    },
+    marginedTop12: {
+        marginTop: 12
+    },
+    timeLineMargin: {
+        marginLeft: 48
+    },
+    input: {
+        color:'#F6F9F4', 
+        fontSize: 18
+    },
+
+    whitest20Text: {
+        color: '#F6F9F4',
+        fontSize: 20
+    },
+    white20Text: {
+        color: '#CEC9AB',
+        fontSize: 20
+    },
+    red20Text: {
+        color: '#C53A2A',
+        fontSize: 20
+    },
+    listTitleText: {
+        color: '#CEC9AB',
+        fontSize: 18
+    },
+    listSubtitleText: {
+        color: '#fa8900',
+        fontSize: 14
+    },
+
+    card: {
+        backgroundColor: '#27221D',
         marginLeft: 12,
         marginRight: 12,
         marginTop: 12
     },
-    cardTitle: {
-        fontSize: 18
-    },
     cardHeader: {
-        backgroundColor: '#f6f6f6'
-    }
+        backgroundColor: '#434343'
+    },
+    cardTitle: {
+        color: '#F6F9F4',
+        fontSize: 20
+    },
+
 });

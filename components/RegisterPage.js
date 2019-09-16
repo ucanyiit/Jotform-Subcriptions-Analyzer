@@ -1,4 +1,4 @@
-import { Button, Container, Form, Input, Item, Text } from 'native-base';
+import { Button, Container, Content, Form, Input, Item, Text } from 'native-base';
 import React, { Component } from 'react';
 import { View } from 'react-native';
 import { connect } from 'react-redux';
@@ -15,35 +15,45 @@ class RegisterPage extends Component {
 
     renderRegister = () => {
         return (
-            <Container>
-                <View style={styles.inputItem}>
-                    {this.props.user.error && <Text style={styles.errorText}>Failed to register, please check your inputs.</Text>}
-                    {!this.props.user.error && <Text style={styles.pleaseText}>Register please.</Text>}
-                </View>
-                <Form>
-                    <Item style={styles.inputItem}>
-                        <Input placeholder='Username'
-                            value={this.state.username}
-                            onChangeText={(username) => this.setState({ username })} />
-                    </Item>
-                    <Item style={styles.inputItem} >
-                        <Input placeholder='Password'
-                            secureTextEntry={true}
-                            value={this.state.password}
-                            onChangeText={(password) => this.setState({ password })} />
-                    </Item>
-                    <Item style={styles.inputItem} >
-                        <Input placeholder='E-Mail'
-                            value={this.state.email}
-                            onChangeText={(email) => this.setState({ email })} />
-                    </Item>
-                </Form>
-                <Button style={styles.button} onPress={() => this.props.registerRequest({ username: this.state.username, password: this.state.password, email: this.state.email })}>
-                    <Text>Register</Text>
-                </Button>
-                <Button style={styles.button} bordered onPress={() => this.props.navigateTo({ page: 'Login' })}>
-                    <Text>Have an account? Login instead</Text>
-                </Button>
+            <Container style={styles.darkBackground}>
+                <Content style={styles.marginedContent}>
+                    <Content style={styles.inputItem}>
+                        {this.props.user.error && <Text style={styles.red20Text}>Failed to register, please check your inputs.</Text>}
+                        {!this.props.user.error && <Text style={styles.whitest20Text}>Register please.</Text>}
+                    </Content>
+                    <Form style={styles.marginedTop12}>
+                        <Item style={styles.marginedContent2}>
+                            <Input style={styles.input}
+                                placeholderTextColor='#CCCAAF'
+                                 placeholder='Username'
+                                value={this.state.username}
+                                onChangeText={(username) => this.setState({ username })} />
+                        </Item>
+                        <Item style={styles.marginedContent2} >
+                            <Input style={styles.input}
+                                placeholderTextColor='#CCCAAF'
+                                 placeholder='Password'
+                                secureTextEntry={true}
+                                value={this.state.password}
+                                onChangeText={(password) => this.setState({ password })} />
+                        </Item>
+                        <Item style={styles.marginedContent2} >
+                            <Input style={styles.input}
+                                placeholderTextColor='#CCCAAF'
+                                 placeholder='E-Mail'
+                                value={this.state.email}
+                                onChangeText={(email) => this.setState({ email })} />
+                        </Item>
+                    </Form>
+                    <Content style={styles.marginedTop12}>
+                        <Button style={styles.button} block onPress={() => this.props.registerRequest({ username: this.state.username, password: this.state.password, email: this.state.email })}>
+                            <Text>Register</Text>
+                        </Button>
+                        <Button style={styles.button} block onPress={() => this.props.navigateTo({ page: 'Login' })}>
+                            <Text>Have an account? Login instead</Text>
+                        </Button>
+                    </Content>
+                </Content>
             </Container>
         );
     }

@@ -8,18 +8,10 @@ import reducers from './redux/reducers';
 
 export const FormsNav = createStackNavigator(
     {
-        Forms: {
-            screen: FormsPage
-        },
-        FormDetails: {
-            screen: FormDetailsPage
-        },
-        FormTimeline: {
-            screen: FormDetailsTimeline,
-        },
-        SubmissionDetails: {
-            screen: SubmissionDetailsPage
-        }
+        Forms: { screen: FormsPage },
+        FormDetails: { screen: FormDetailsPage },
+        FormTimeline: { screen: FormDetailsTimeline },
+        SubmissionDetails: { screen: SubmissionDetailsPage }
     },
     {
         headerMode: 'none'
@@ -28,12 +20,8 @@ export const FormsNav = createStackNavigator(
 
 export const SubmissionsNav = createStackNavigator(
     {
-        Submissons: {
-            screen: SubmissionsPage
-        },
-        SubmissionDetails: {
-            screen: SubmissionDetailsPage
-        }
+        Submissons: { screen: SubmissionsPage },
+        SubmissionDetails: { screen: SubmissionDetailsPage }
     },
     {
         headerMode: 'none'
@@ -42,29 +30,27 @@ export const SubmissionsNav = createStackNavigator(
 
 export const Drawer = createDrawerNavigator(
     {
-        Forms: {
-            screen: FormsNav
-        },
-        Submissions: {
-            screen: SubmissionsNav
+        Forms: { screen: FormsNav },
+        Submissions: { screen: SubmissionsNav }
+    },
+    {
+        drawerBackgroundColor: 'black',
+        contentOptions: {
+            activeTintColor: 'white',
+            inactiveTintColor: 'white'
         }
     }
 );
 
 export const AppStack = createStackNavigator(
     {
-        Login: {
-            screen: LoginPage
-        },
-        Register: {
-            screen: RegisterPage
-        },
-        Drawer: {
-            screen: Drawer
-        }
+        Drawer: { screen: Drawer },
+        Login: { screen: LoginPage },
+        Register: { screen: RegisterPage },
     },
     {
-        headerMode: 'none'
+        headerMode: 'none',
+        initialRouteName: 'Drawer'
     }
 );
 

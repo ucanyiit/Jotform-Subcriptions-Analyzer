@@ -32,18 +32,27 @@ const getTimeString = (time) => {
 }
 
 export const getLastXPaymentsFromSubscriptions = (paymentNumber, subscriptions) => {
-
+    const color = {
+        'Yearly': '#bf0c0c',
+        'Quarterly': '#fa8900',
+        'Bi-Monthly': '#ffc600',
+        'Monthly': '#9748a8',
+        'Bi-Weekly': '#2bb3f3',
+        'Weekly': '#47bc00',
+        'Daily': '#d9e1e2',
+    }
     let payments = [], lastXPayments = [];
+
     for (i in subscriptions) for (j in subscriptions[i].payments) payments.push({
         date: getCompareableDateString(subscriptions[i].payments[j]),
         time: getTimeString(getCompareableDateString(subscriptions[i].payments[j])),
         title: getPaymentText(subscriptions[i]),
         description: subscriptions[i].info.firstname + " " + subscriptions[i].info.lastname,
-        submission_id: subscriptions[i].submission_id
+        circleColor: color[subscriptions[i].period],
     })
     payments.sort((b, a) => { return b.date > a.date });
 
-    for (let i = 0; i < paymentNumber; i++) lastXPayments.push({time: payments[i].time, title: payments[i].title, description: payments[i].description});
+    for (let i = 0; i < paymentNumber; i++) lastXPayments.push({ time: payments[i].time, title: payments[i].title, description: payments[i].description, circleColor: payments[i].circleColor });
     console.log(lastXPayments);
     return lastXPayments;
 }

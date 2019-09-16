@@ -26,14 +26,14 @@ class FormDetailsPage extends React.Component {
 
     getEarnings() {
         let text;
-        if (!this.state.allPayments) return text = <Text style={styles.dateText}>Please select a date</Text>;
-        else text = <Text style={styles.dateText}>{this.state.allPayments} {this.props.user.form.payments[0].currency}</Text>;
+        if (!this.state.allPayments) return text = <Text style={styles.white20Text}>Please select a date</Text>;
+        else text = <Text style={styles.white20Text}>{this.state.allPayments} {this.props.user.form.payments[0].currency}</Text>;
         return text
     }
 
     renderHeader() {
         return (
-            <Header>
+            <Header androidStatusBarColor='#fa8900' style={styles.orangeBackground}>
                 <Left>
                     <Button transparent onPress={() => this.props.navigation.goBack()}>
                         <Icon name='arrow-back' />
@@ -49,41 +49,38 @@ class FormDetailsPage extends React.Component {
 
     renderDatePickerCard() {
         return (
-            <Card style={styles.dateCard}>
-                <CardItem bordered style={styles.cardHeader}>
+            <Card transparent style={styles.card}>
+                <CardItem style={styles.cardHeader}>
                     <Text style={styles.cardTitle}>Calculate earnings to the date</Text>
                 </CardItem>
-                <CardItem bordered>
-                    <Left />
-                    <DatePicker
-                        defaultDate={this.currentDate}
-                        minimumDate={this.currentDate}
-                        maximumDate={new Date(2030, 1, 1)}
-                        locale={'en'}
-                        timeZoneOffsetInMinutes={undefined}
-                        modalTransparent={false}
-                        animationType={'fade'}
-                        androidMode={'spinner'}
-                        placeHolderText='Select date'
-                        textStyle={styles.datePicker}
-                        placeHolderTextStyle={styles.datePicker}
-                        onDateChange={(newDate) => this.setDate(newDate)}
-                        disabled={false}
-                    />
-                    <Right />
-                </CardItem>
-                <CardItem bordered>
-                    <Left />
-                    {this.getEarnings()}
-                    <Right />
-                </CardItem>
-                <CardItem bordered>
-                    <Left />
-                    <Button style={styles.button} block onPress={() => this.props.navigateTo({ page: 'FormTimeline' })}>
-                        <Text>Show Timeline</Text>
-                    </Button>
-                    <Right />
-                </CardItem>
+                <List>
+                    <ListItem>
+                        <Left>
+                            <DatePicker
+                                defaultDate={this.currentDate}
+                                minimumDate={this.currentDate}
+                                maximumDate={new Date(2030, 1, 1)}
+                                locale={'en'}
+                                timeZoneOffsetInMinutes={undefined}
+                                modalTransparent={false}
+                                animationType={'fade'}
+                                androidMode={'spinner'}
+                                placeHolderText='Select date'
+                                textStyle={styles.datePicker}
+                                placeHolderTextStyle={styles.datePicker}
+                                onDateChange={(newDate) => this.setDate(newDate)}
+                                disabled={false}
+                            />
+                        </Left>
+                        {this.getEarnings()}
+                    </ListItem>
+                    <ListItem>
+                        <Left/>
+                        <Button style={styles.orangeBackground} block onPress={() => this.props.navigateTo({ page: 'FormTimeline' })}>
+                            <Text>Show Timeline</Text>
+                        </Button>
+                    </ListItem>
+                </List>
             </Card>
         )
     }
@@ -92,8 +89,8 @@ class FormDetailsPage extends React.Component {
         return (
             <ListItem button onPress={() => { this.props.navigateTo({ page: 'SubmissionDetails', id: submission.id }) }} style={styles.productItem}>
                 <Body>
-                    <Text style={styles.smallTitleText}>{getPaymentText(submission.payment)}</Text>
-                    <Text style={styles.smallSubtitleText}>{submission.created_at}</Text>
+                    <Text style={styles.listTitleText}>{getPaymentText(submission.payment)}</Text>
+                    <Text style={styles.listSubtitleText}>{submission.created_at}</Text>
                 </Body>
             </ListItem>
         );
@@ -109,40 +106,40 @@ class FormDetailsPage extends React.Component {
         let form = this.props.user.form, paymentType = "";
         if (form.paymentType && form.paymentType == 'subscription') details = (
             <ListItem>
-                <Left><Text style={styles.smallTitleTexpt}>Payment Type:</Text></Left>
-                <Text style={styles.smallTitleText}>Subscription</Text>
+                <Left><Text style={styles.listTitleText}>Payment Type:</Text></Left>
+                <Text style={styles.listTitleText}>Subscription</Text>
             </ListItem>
         )
         else if (form.paymentType && form.paymentType == 'product') details = (
             <View>
                 <ListItem>
-                    <Left><Text style={styles.smallTitleTexpt}>Payment Type:</Text></Left>
-                    <Text style={styles.smallTitleText}>One Time Payment</Text>
+                    <Left><Text style={styles.listTitleText}>Payment Type:</Text></Left>
+                    <Text style={styles.listTitleText}>One Time Payment</Text>
                 </ListItem>
                 <ListItem>
-                    <Left><Text style={styles.smallTitleTexpt}>Total Revenue:</Text></Left>
-                    <Text style={styles.smallTitleText}>{this.getTotalEarnings(form.payments)}</Text>
+                    <Left><Text style={styles.listTitleText}>Total Revenue:</Text></Left>
+                    <Text style={styles.listTitleText}>{this.getTotalEarnings(form.payments)}</Text>
                 </ListItem>
             </View>
         )
 
         return (
-            <Card style={styles.dateCard}>
-                <CardItem bordered style={styles.cardHeader}>
+            <Card transparent style={styles.card}>
+                <CardItem style={styles.cardHeader}>
                     <Text style={styles.cardTitle}>Details</Text>
                 </CardItem>
                 <List>
                     <ListItem>
-                        <Left><Text style={styles.smallTitleText}>Form: </Text></Left>
-                        <Text style={styles.smallTitleText}>{form.title}</Text>
+                        <Left><Text style={styles.listTitleText}>Form: </Text></Left>
+                        <Text style={styles.listTitleText}>{form.title}</Text>
                     </ListItem>
                     <ListItem>
-                        <Left><Text style={styles.smallTitleText}>Form ID: </Text></Left>
-                        <Text style={styles.smallTitleText}>{form.id}</Text>
+                        <Left><Text style={styles.listTitleText}>Form ID: </Text></Left>
+                        <Text style={styles.listTitleText}>{form.id}</Text>
                     </ListItem>
                     <ListItem>
-                        <Left><Text style={styles.smallTitleText}>Created at:</Text></Left>
-                        <Text style={styles.smallTitleText}>{form.created_at}</Text>
+                        <Left><Text style={styles.listTitleText}>Created at:</Text></Left>
+                        <Text style={styles.listTitleText}>{form.created_at}</Text>
                     </ListItem>
                     {form.paymentType && details}
                 </List>
@@ -152,22 +149,22 @@ class FormDetailsPage extends React.Component {
 
     renderSubmissions() {
         if (!this.props.user.form.submissions) return (
-            <Card style={styles.dateCard}>
-                <CardItem bordered style={styles.cardHeader}>
+            <Card transparent style={styles.card}>
+                <CardItem style={styles.cardHeader}>
                     <Text style={styles.cardTitle}>Submissions to this form</Text>
                 </CardItem>
                 <List>
                     <ListItem button onPress={() => { this.props.navigateTo({ page: 'SubmissionDetails', id: submission.id }) }} style={styles.productItem}>
                         <Body>
-                            <Text style={styles.smallTitleText}>No submissions for this form</Text>
+                            <Text style={styles.listTitleText}>No submissions for this form</Text>
                         </Body>
                     </ListItem>
                 </List>
             </Card>
         )
         else return (
-            <Card style={styles.dateCard}>
-                <CardItem bordered style={styles.cardHeader}>
+            <Card transparent style={styles.card}>
+                <CardItem style={styles.cardHeader}>
                     <Text style={styles.cardTitle}>Submissions to this form</Text>
                 </CardItem>
                 <List>
@@ -180,7 +177,7 @@ class FormDetailsPage extends React.Component {
     render() {
         if (this.props.user.isLoading) return <WaitingPage />
         else return (
-            <Container>
+            <Container style={styles.darkBackground}>
                 {this.renderHeader()}
                 <Content>
                     {this.props.user.form.paymentType == "subscription" && this.renderDatePickerCard()}

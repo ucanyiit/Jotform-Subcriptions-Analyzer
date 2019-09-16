@@ -27,7 +27,7 @@ class SubmissionDetailsPage extends React.Component {
 
     renderHeader() {
         return (
-            <Header>
+            <Header androidStatusBarColor='#fa8900' style={styles.orangeBackground}>
                 <Left>
                     <Button transparent onPress={() => this.props.navigation.goBack()}>
                         <Icon name='arrow-back' />
@@ -43,41 +43,37 @@ class SubmissionDetailsPage extends React.Component {
 
     getEarnings() {
         let text;
-        if (!this.state.allPayments) return text = <Text style={styles.dateText}>Please select a date</Text>;
-        else text = <Text style={styles.dateText}>{this.state.allPayments} {this.props.user.submission.payment.currency}</Text>;
+        if (!this.state.allPayments) return text = <Text style={styles.white20Text}>Please select a date</Text>;
+        else text = <Text style={styles.white20Text}>{this.state.allPayments} {this.props.user.submission.payment.currency}</Text>;
         return text
     }
 
     renderDatePickerCard() {
         return (
-            <Card style={styles.dateCard}>
-                <CardItem bordered style={styles.cardHeader}>
+            <Card transparent style={styles.card}>
+                <CardItem style={styles.cardHeader}>
                     <Text style={styles.cardTitle}>Calculate earnings to the date</Text>
                 </CardItem>
-                <CardItem bordered>
-                    <Left />
-                    <DatePicker
-                        defaultDate={this.currentDate}
-                        minimumDate={this.currentDate}
-                        maximumDate={new Date(2030, 1, 1)}
-                        locale={'en'}
-                        timeZoneOffsetInMinutes={undefined}
-                        modalTransparent={false}
-                        animationType={'fade'}
-                        androidMode={'spinner'}
-                        placeHolderText='Select date'
-                        textStyle={styles.datePicker}
-                        placeHolderTextStyle={styles.datePicker}
-                        onDateChange={(newDate) => this.setDate(newDate)}
-                        disabled={false}
-                    />
-                    <Right />
-                </CardItem>
-                <CardItem bordered>
-                    <Left />
+                <ListItem>
+                    <Left>
+                        <DatePicker
+                            defaultDate={this.currentDate}
+                            minimumDate={this.currentDate}
+                            maximumDate={new Date(2030, 1, 1)}
+                            locale={'en'}
+                            timeZoneOffsetInMinutes={undefined}
+                            modalTransparent={false}
+                            animationType={'fade'}
+                            androidMode={'spinner'}
+                            placeHolderText='Select date'
+                            textStyle={styles.datePicker}
+                            placeHolderTextStyle={styles.datePicker}
+                            onDateChange={(newDate) => this.setDate(newDate)}
+                            disabled={false}
+                        />
+                    </Left>
                     {this.getEarnings()}
-                    <Right />
-                </CardItem>
+                </ListItem>
             </Card>
         )
     }
@@ -89,16 +85,16 @@ class SubmissionDetailsPage extends React.Component {
     renderProductRow = (product) => {
         return (
             <ListItem style={styles.productItem}>
-                <Left><Text style={styles.smallTitleText}>{product.name} ( {product.price} {product.currency} )</Text></Left>
-                <Text style={styles.smallTitleText}>{product.quantity}</Text>
+                <Left><Text style={styles.listTitleText}>{product.name} ( {product.price} {product.currency} )</Text></Left>
+                <Text style={styles.listTitleText}>{product.quantity}</Text>
             </ListItem>
         );
     }
 
     renderProducts = () => {
         return (
-            <Card style={styles.dateCard}>
-                <CardItem bordered style={styles.cardHeader}>
+            <Card transparent style={styles.card}>
+                <CardItem style={styles.cardHeader}>
                     <Text style={styles.cardTitle}>Products Sold</Text>
                 </CardItem>
                 <List>
@@ -112,19 +108,19 @@ class SubmissionDetailsPage extends React.Component {
         return (
             <View>
                 <ListItem>
-                    <Left><Text style={styles.smallTitleText}>{payment.period} payment:</Text></Left>
-                    <Text style={styles.smallTitleText}>{payment.price} {payment.currency}</Text>
+                    <Left><Text style={styles.listTitleText}>{payment.period} payment:</Text></Left>
+                    <Text style={styles.listTitleText}>{payment.price} {payment.currency}</Text>
                 </ListItem>
                 <ListItem>
-                    <Left><Text style={styles.smallTitleText}>Customer name: </Text></Left>
-                    <Text style={styles.smallTitleText}>{payment.info.firstName} {payment.info.lastName}</Text>
+                    <Left><Text style={styles.listTitleText}>Customer name: </Text></Left>
+                    <Text style={styles.listTitleText}>{payment.info.firstname} {payment.info.lastname}</Text>
                 </ListItem>
                 <ListItem>
-                    <Left><Text style={styles.smallTitleText}>Subscription start date: </Text></Left>
-                    <Text style={styles.smallTitleText}>{submission.created_at}</Text>
+                    <Left><Text style={styles.listTitleText}>Subscription start date: </Text></Left>
+                    <Text style={styles.listTitleText}>{submission.created_at}</Text>
                 </ListItem>
                 <ListItem>
-                    <Left><Text style={styles.smallTitleText}>Payment service: </Text></Left>
+                    <Left><Text style={styles.listTitleText}>Payment service: </Text></Left>
                     <IconAwesome active name='stripe-s' />
                 </ListItem>
             </View>
@@ -135,19 +131,19 @@ class SubmissionDetailsPage extends React.Component {
         return (
             <View>
                 <ListItem>
-                    <Left><Text style={styles.smallTitleText}>Total Payment:</Text></Left>
-                    <Text style={styles.smallTitleText}>{payment.total} {payment.currency}</Text>
+                    <Left><Text style={styles.listTitleText}>Total Payment:</Text></Left>
+                    <Text style={styles.listTitleText}>{payment.total} {payment.currency}</Text>
                 </ListItem>
                 <ListItem>
-                    <Left><Text style={styles.smallTitleText}>Customer name: </Text></Left>
-                    <Text style={styles.smallTitleText}>{payment.info.firstName} {payment.info.lastName}</Text>
+                    <Left><Text style={styles.listTitleText}>Customer name: </Text></Left>
+                    <Text style={styles.listTitleText}>{payment.info.firstName} {payment.info.lastName}</Text>
                 </ListItem>
                 <ListItem>
-                    <Left><Text style={styles.smallTitleText}>Payment date: </Text></Left>
-                    <Text style={styles.smallTitleText}>{submission.created_at}</Text>
+                    <Left><Text style={styles.listTitleText}>Payment date: </Text></Left>
+                    <Text style={styles.listTitleText}>{submission.created_at}</Text>
                 </ListItem>
                 <ListItem>
-                    <Left><Text style={styles.smallTitleText}>Payment service: </Text></Left>
+                    <Left><Text style={styles.listTitleText}>Payment service: </Text></Left>
                     <IconAwesome active name='stripe-s' />
                 </ListItem>
             </View>
@@ -156,7 +152,7 @@ class SubmissionDetailsPage extends React.Component {
 
     renderNoAdditionalInfo() {
         return (
-            <Card style={styles.dateCard}>
+            <Card transparent style={styles.card}>
                 <CardItem>
                     <Left />
                     <Text style={styles.smallSubtitleText}>There's no additional info about this submission since it's not a payment or subscription</Text>
@@ -181,22 +177,22 @@ class SubmissionDetailsPage extends React.Component {
         else additionalInfo = this.renderNoAdditionalInfo();
 
         detailsList = (
-            <Card style={styles.dateCard}>
-                    <CardItem bordered style={styles.cardHeader}>
-                        <Text style={styles.cardTitle}>Details</Text>
-                    </CardItem>
-                    <List>
-                        <ListItem>
-                            <Left><Text style={styles.smallTitleText}>Submission ID: </Text></Left>
-                            <Text style={styles.smallTitleText}>{submission.id}</Text>
-                        </ListItem>
-                        <ListItem>
-                            <Left><Text style={styles.smallTitleText}>Form: </Text></Left>
-                            <Text style={styles.smallTitleText}>{submission.form.title}</Text>
-                        </ListItem>
-                        {details}
-                    </List>
-                </Card>
+            <Card transparent style={styles.card}>
+                <CardItem style={styles.cardHeader}>
+                    <Text style={styles.cardTitle}>Details</Text>
+                </CardItem>
+                <List>
+                    <ListItem>
+                        <Left><Text style={styles.listTitleText}>Submission ID: </Text></Left>
+                        <Text style={styles.listTitleText}>{submission.id}</Text>
+                    </ListItem>
+                    <ListItem>
+                        <Left><Text style={styles.listTitleText}>Form: </Text></Left>
+                        <Text style={styles.listTitleText}>{submission.form.title}</Text>
+                    </ListItem>
+                    {details}
+                </List>
+            </Card>
         )
 
         return (
@@ -209,7 +205,7 @@ class SubmissionDetailsPage extends React.Component {
 
     render() {
         return (
-            <Container>
+            <Container style={styles.darkBackground}>
                 {this.renderHeader()}
                 {this.renderDetails()}
             </Container>

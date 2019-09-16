@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { Body, Button, Card, CardItem, Container, Content, Header, Icon, Left, Right, Title } from 'native-base';
+import { Body, Button, Container, Header, Icon, Left, Right, Title, Content } from 'native-base';
 import React from 'react';
 import Timeline from 'react-native-timeline-flatlist';
 import { connect } from 'react-redux';
@@ -25,7 +25,7 @@ class FormDetailsPage extends React.Component {
 
     renderHeader() {
         return (
-            <Header>
+            <Header  androidStatusBarColor='#fa8900' style={styles.orangeBackground}>
                 <Left>
                     <Button transparent onPress={() => this.props.navigation.goBack()}>
                         <Icon name='arrow-back' />
@@ -42,20 +42,21 @@ class FormDetailsPage extends React.Component {
     render() {
         if (this.props.user.isLoading) return <WaitingPage />
         else return (
-            <Container>
+            <Container style={styles.darkBackground}>
                 {this.renderHeader()}
-                <Content>
-                    <Card style={styles.dateCard}>
-                        <CardItem>
-                            <Timeline
-                                options={{
-                                    removeClippedSubviews: false
-                                }}
-                                timeContainerStyle={{ minWidth: 128 }}
-                                data={getLastXPaymentsFromSubscriptions(500, this.props.user.form.payments)}
-                            />
-                        </CardItem>
-                    </Card>
+                <Content style={styles.timeLineMargin}>
+                    <Timeline
+                        options={{
+                            removeClippedSubviews: false
+                        }}
+                        lineColor='#fa8900'
+                        timeStyle={{ color: '#CEC9AB' }}
+                        descriptionStyle={{ color: '#CEC9AB' }}
+                        timeContainerStyle={{ minWidth: 128 }}
+                        titleStyle={{ color: '#fa8900' }}
+                        data={getLastXPaymentsFromSubscriptions(500, this.props.user.form.payments)}
+                        style={styles.darkBackground}
+                    />
                 </Content>
             </Container>
         )
