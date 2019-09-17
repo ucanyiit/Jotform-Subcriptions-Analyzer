@@ -1,6 +1,7 @@
 import moment from 'moment';
 import { Body, Button, Card, CardItem, Container, Content, DatePicker, Header, Icon, Left, List, ListItem, Right, Text, Title, View } from 'native-base';
 import React from 'react';
+import { BarChart, Grid, XAxis, YAxis } from 'react-native-svg-charts';
 import { connect } from 'react-redux';
 import { formDetailsRequest, navigateTo } from '../redux/actions';
 import { getAllPaymentsToDateFromSubscriptions, getDateObject, getPaymentText } from '../redux/functions';
@@ -11,10 +12,7 @@ class FormDetailsPage extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {
-            currentDate: new Date(),
-            currentDateObject: getDateObject(moment(new Date()).format('YYYY-MM-DD'))
-        }
+        this.state = { currentDate: new Date() }
         if (!this.props.user.loggedIn) this.props.navigateTo({ page: 'Login' });
         else if (typeof (this.props.user.form) === 'string') this.props.formDetailsRequest(this.props.user.form);
     }
@@ -75,12 +73,50 @@ class FormDetailsPage extends React.Component {
                         {this.getEarnings()}
                     </ListItem>
                     <ListItem>
-                        <Left/>
+                        <Left />
                         <Button style={styles.orangeBackground} block onPress={() => this.props.navigateTo({ page: 'FormTimeline' })}>
                             <Text>Show Timeline</Text>
                         </Button>
                     </ListItem>
                 </List>
+            </Card>
+        )
+    }
+
+    renderChart() {
+        const contentInset = { top: 20, bottom: 20 };
+        const data = [1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4]
+        return (
+            <Card transparent style={styles.card}>
+                <CardItem style={styles.cardHeader}>
+                    <Text style={styles.cardTitle}>Last payments</Text>
+                </CardItem>
+                <View style={{ flexDirection: 'column' }}>
+                    <View style={{ height: 200, flexDirection: 'row' }}>
+                        <YAxis
+                            data={data}
+                            contentInset={contentInset}
+                            svg={{ fontSize: 10, fill: '#fa8900' }}
+                            numberOfTicks={10}
+                            formatLabel={value => value}
+                        />
+                        <BarChart
+                            style={{ flex: 1, marginLeft: 16 }}
+                            data={data}
+                            svg={{ fill: '#fa8900' }}
+                            contentInset={contentInset}
+                        >
+                            <Grid />
+                        </BarChart>
+                    </View>
+                    <XAxis
+                    style={{ marginHorizontal: -10 }}
+                        data={data}
+                        formatLabel={(value, index) => index}
+                        contentInset={contentInset}
+                        svg={{ fontSize: 10, fill: '#fa8900' }}
+                    />
+                </View>
             </Card>
         )
     }
@@ -181,6 +217,7 @@ class FormDetailsPage extends React.Component {
                 {this.renderHeader()}
                 <Content>
                     {this.props.user.form.paymentType == "subscription" && this.renderDatePickerCard()}
+                    {this.props.user.form.paymentType == "product" && this.renderChart()}
                     {this.renderDetailsList()}
                     {this.renderSubmissions()}
                 </Content>
