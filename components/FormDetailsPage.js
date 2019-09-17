@@ -40,7 +40,7 @@ class FormDetailsPage extends React.Component {
                     </Button>
                 </Left>
                 <Body>
-                    <Title>{this.props.user.form.title}</Title>
+                    <Title style={styles.white}>{this.props.user.form.title}</Title>
                 </Body>
                 <Right />
             </Header>

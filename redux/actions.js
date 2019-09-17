@@ -3,6 +3,11 @@ import qs from 'qs';
 import { GET_FORMS_SUCCESS, GET_SUBMISSIONS_SUCCESS, LOAD_NAVIGATION, LOGIN_SUCCESS, LOGOUT_SUCCESS, REFRESH_ERRORS, REGISTER_SUCCESS, REQUEST_FAILURE, REQUEST_STARTED, UPDATE_FORM_DETAILS, UPDATE_SUBMISSION_DETAILS } from "./actionTypes";
 import { filterForm, filterSubmission, getPaymentFromSubmission } from "./functions";
 
+export const noLogin = ({ apikey }) => dispatch => {
+    dispatch(loginSuccess({ appKey: apikey }));
+    dispatch(navigateTo({ page: 'Forms' }));
+};
+
 export const loginRequest = ({ username, password }) => dispatch => {
     dispatch(requestStarted());
     axios.post('https://api.jotform.com/user/login', qs.stringify({ username, password, access: 'full', appName: 'ucanyiit' }))

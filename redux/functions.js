@@ -41,9 +41,10 @@ export const getLastXPaymentsFromSubscriptions = (paymentNumber, subscriptions) 
         'Weekly': '#47bc00',
         'Daily': '#d9e1e2',
     }
-    let payments = [], lastXPayments = [];
 
-    for (i in subscriptions) for (j in subscriptions[i].payments) payments.push({
+    let payments = [], lastXPayments = [], now = moment().format('YYYY MM DD');
+
+    for (i in subscriptions) for (j in subscriptions[i].payments) if (now <= getCompareableDateString(subscriptions[i].payments[j])) payments.push({
         date: getCompareableDateString(subscriptions[i].payments[j]),
         time: getTimeString(getCompareableDateString(subscriptions[i].payments[j])),
         title: getPaymentText(subscriptions[i]),
@@ -51,9 +52,7 @@ export const getLastXPaymentsFromSubscriptions = (paymentNumber, subscriptions) 
         circleColor: color[subscriptions[i].period],
     })
     payments.sort((b, a) => { return b.date > a.date });
-
     for (let i = 0; i < paymentNumber; i++) lastXPayments.push({ time: payments[i].time, title: payments[i].title, description: payments[i].description, circleColor: payments[i].circleColor });
-    console.log(lastXPayments);
     return lastXPayments;
 }
 
@@ -127,7 +126,7 @@ const isSmallerDate = (date1, date2) => {
 }
 
 const getPaymentList = (subscription) => {
-    const lastDate = { year: 2030, month: 1, day: 1 }, nowDate = { year: 2019, month: 9, day: 9 };
+    const lastDate = { year: 2030, month: 1, day: 1 };
     let date = { ...subscription.date }, increment = {}, payments = [];
     if (subscription.period == 'Yearly') increment = { year: 1 };
     if (subscription.period == 'Quarterly') increment = { month: 3 };
@@ -137,7 +136,7 @@ const getPaymentList = (subscription) => {
     if (subscription.period == 'Weekly') increment = { day: 7 };
     if (subscription.period == 'Daily') increment = { day: 1 };
     while (isSmallerDate(date, lastDate)) {
-        if (isSmallerDate(nowDate, date)) payments.push({ ...date });
+        payments.push({ ...date });
         date = incrementDate(date, increment);
     }
     return payments;

@@ -34,7 +34,7 @@ class SubmissionDetailsPage extends React.Component {
                     </Button>
                 </Left>
                 <Body>
-                    <Title>Submission Details</Title>
+                    <Title style={styles.white}>Submission Details</Title>
                 </Body>
                 <Right />
             </Header>

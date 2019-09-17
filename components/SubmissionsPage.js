@@ -37,12 +37,12 @@ class SubmissionsPage extends Component {
             <Header androidStatusBarColor='#fa8900' style={styles.orangeBackground}>
                 <Left />
                 <Body>
-                    <Title>Submissions</Title>
+                    <Title style={styles.white}>Submissions</Title>
                 </Body>
                 <Right>
                     <Picker
                         mode='dropdown'
-                        style={{ color: '#fff', }}
+                        style={styles.white}
                         selectedValue={this.state.selected}
                         onValueChange={this.onValueChange.bind(this)}>
                         <Picker.Item label='All Submissions' value='all' />

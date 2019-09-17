@@ -1,7 +1,7 @@
 import { Body, Container, Content, Header, Left, List, ListItem, Picker, Right, Text, Title } from 'native-base';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { loadNavigation, formsRequest, navigateTo } from '../redux/actions';
+import { formsRequest, navigateTo } from '../redux/actions';
 import Logout from './LogoutButton';
 import { WaitingPage } from './pages';
 import styles from './styles';
@@ -11,7 +11,6 @@ class FormsPage extends Component {
     constructor(props) {
         super(props);
         this.state = { selected: 'subscription' };
-        if (!this.props.nav) this.props.loadNavigation(this.props.navigation);
 
         if (!this.props.user.loggedIn) this.props.navigateTo({ page: 'Login' });
         else this.props.formsRequest(this.state.selected);
@@ -38,12 +37,12 @@ class FormsPage extends Component {
             <Header androidStatusBarColor='#fa8900' style={styles.orangeBackground}>
                 <Left />
                 <Body>
-                    <Title>Forms</Title>
+                    <Title style={styles.white}>Forms</Title>
                 </Body>
                 <Right>
                     <Picker
                         mode='dropdown'
-                        style={{ color: '#fff', }}
+                        style={styles.white}
                         selectedValue={this.state.selected}
                         onValueChange={this.onValueChange.bind(this)}>
                         <Picker.Item label='All Forms' value='all' />

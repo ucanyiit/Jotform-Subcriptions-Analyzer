@@ -34,23 +34,24 @@ export const Drawer = createDrawerNavigator(
         Submissions: { screen: SubmissionsNav }
     },
     {
-        drawerBackgroundColor: 'black',
+        drawerBackgroundColor: '#27221D',
         contentOptions: {
-            activeTintColor: 'white',
-            inactiveTintColor: 'white'
+            activeTintColor: '#fa8900',
+            inactiveTintColor: '#F6F9F4',
+            labelStyle: { fontSize: 18 }
         }
     }
 );
 
 export const AppStack = createStackNavigator(
     {
-        Drawer: { screen: Drawer },
         Login: { screen: LoginPage },
         Register: { screen: RegisterPage },
+        Drawer: { screen: Drawer },
     },
     {
         headerMode: 'none',
-        initialRouteName: 'Drawer'
+        initialRouteName: 'Login'
     }
 );
 

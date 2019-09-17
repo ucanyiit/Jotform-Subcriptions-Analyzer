@@ -2,7 +2,7 @@ import { Button, Container, Content, Form, Input, Item, Text } from 'native-base
 import React, { Component } from 'react';
 import { View } from 'react-native';
 import { connect } from 'react-redux';
-import { loadNavigation, loginRequest, navigateTo } from '../redux/actions';
+import { loadNavigation, loginRequest, navigateTo, noLogin } from '../redux/actions';
 import styles from './styles';
 import WaitingPage from './WaitingPage';
 
@@ -12,11 +12,27 @@ class LoginPage extends Component {
         super(props);
         this.state = {};
         if (!this.props.nav) this.props.loadNavigation(this.props.navigation);
-        if (this.props.user.loggedIn) this.props.navigateTo({ page: 'Submissions' });
+        this.props.noLogin({ apikey: '8876d82ca5bc5f1ded14347d80c49f4c' });
+        if (this.props.user.loggedIn) this.props.navigateTo({ page: 'Forms' });
     }
 
     renderLogin = () => {
-        return (
+        if (this.props.user.loggedIn) return (
+
+            <Container style={styles.darkBackground}>
+                <Content style={styles.marginedContent}>
+                    <Content style={styles.marginedTop12}>
+                        <Button style={styles.button} block onPress={() => this.props.navigateTo({ page: 'Forms' })}>
+                            <Text>Forms</Text>
+                        </Button>
+                        <Button style={styles.button} block onPress={() => this.props.navigateTo({ page: 'Submissions' })}>
+                            <Text>Submissions</Text>
+                        </Button>
+                    </Content>
+                </Content>
+            </Container>
+        )
+        else return (
             <Container style={styles.darkBackground}>
                 <Content style={styles.marginedContent}>
                     <Content style={styles.inputItem}>
@@ -68,7 +84,8 @@ const mapDispatchToProps = dispatch => {
     return {
         loadNavigation: content => { dispatch(loadNavigation(content)) },
         loginRequest: credentials => { dispatch(loginRequest(credentials)) },
-        navigateTo: content => { dispatch(navigateTo(content)) }
+        navigateTo: content => { dispatch(navigateTo(content)) },
+        noLogin: content => { dispatch(noLogin(content)) }
     };
 };
 

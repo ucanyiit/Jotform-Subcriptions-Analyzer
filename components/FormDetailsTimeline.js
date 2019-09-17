@@ -32,7 +32,7 @@ class FormDetailsPage extends React.Component {
                     </Button>
                 </Left>
                 <Body>
-                    <Title>Payments from {this.props.user.form.title}</Title>
+                    <Title style={styles.white}>Payments from {this.props.user.form.title}</Title>
                 </Body>
                 <Right />
             </Header>
