@@ -1,34 +1,29 @@
 import moment from 'moment';
 
+const getCompareableDateString = (payment) => {
+    if (typeof payment.month != 'string' && payment.month < 10) payment.month = "0" + payment.month;
+    if (typeof payment.day != 'string' && payment.day < 10) payment.day = "0" + payment.day;
+    return payment.year + " " + payment.month + " " + payment.day;
+}
+
+const getTimeString = (time) => {
+    return moment(Date.parse(time)).format("MMM Do YYYY");
+}
+
 export const getAllPaymentsToDateFromSubscription = (lastDate, subscription) => {
-    const payments = subscription.payments;
+    const payments = subscription.payments, now = moment().format('YYYY MM DD');
     let totalPayment = 0;
     for (i in payments) {
-        if (isSmallerDate(payments[i], lastDate)) totalPayment += subscription.price;
-        else break;
+        if (!isSmallerDate(payments[i], lastDate)) break;
+        else if (now <= getCompareableDateString(payments[i])) totalPayment += subscription.price;
     }
     return totalPayment;
 }
 
 export const getAllPaymentsToDateFromSubscriptions = (lastDate, subscriptions) => {
     let totalPayment = 0;
-    for (j in subscriptions) {
-        for (i in subscriptions[j].payments) {
-            if (isSmallerDate(subscriptions[j].payments[i], lastDate)) totalPayment += subscriptions[j].price;
-            else break;
-        }
-    }
+    for (j in subscriptions) totalPayment += getAllPaymentsToDateFromSubscription(lastDate, subscriptions[j])
     return totalPayment;
-}
-
-const getCompareableDateString = (payment) => {
-    if (payment.month < 10) payment.month = "0" + payment.month;
-    if (payment.day < 10) payment.day = "0" + payment.day;
-    return payment.year + " " + payment.month + " " + payment.day;
-}
-
-const getTimeString = (time) => {
-    return moment(Date.parse(time)).format("MMM Do YYYY");
 }
 
 export const getLastXPaymentsFromSubscriptions = (paymentNumber, subscriptions) => {
