@@ -3,6 +3,7 @@ package com.pr;
 import android.app.Application;
 import android.util.Log;
 
+import com.horcrux.svg.SvgPackage;
 import com.facebook.react.PackageList;
 import com.facebook.hermes.reactexecutor.HermesExecutorFactory;
 import com.facebook.react.bridge.JavaScriptExecutorFactory;
@@ -29,6 +30,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+          new SvgPackage(),
           new RNGestureHandlerPackage()
       );
     }

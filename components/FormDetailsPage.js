@@ -84,8 +84,7 @@ class FormDetailsPage extends React.Component {
     }
 
     renderChart() {
-        const contentInset = { top: 20, bottom: 20 };
-        const data = [1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4]
+        const data = [121, 91, 113, 244, 221, 52, 32, 45, 321, 21, 32, 413]
         return (
             <Card transparent style={styles.card}>
                 <CardItem style={styles.cardHeader}>
@@ -94,26 +93,29 @@ class FormDetailsPage extends React.Component {
                 <View style={{ flexDirection: 'column' }}>
                     <View style={{ height: 200, flexDirection: 'row' }}>
                         <YAxis
+                            style={{ width: 32 }}
                             data={data}
-                            contentInset={contentInset}
+                            contentInset={{ top: 24, bottom: 12 }}
                             svg={{ fontSize: 10, fill: '#fa8900' }}
+                            min={0}
                             numberOfTicks={10}
                             formatLabel={value => value}
                         />
                         <BarChart
-                            style={{ flex: 1, marginLeft: 16 }}
+                            style={{ flex: 1, marginLeft: 0 }}
                             data={data}
                             svg={{ fill: '#fa8900' }}
-                            contentInset={contentInset}
+                            contentInset={{ top: 24, bottom: 12 }}
+                            yMin={0}
                         >
                             <Grid />
                         </BarChart>
                     </View>
                     <XAxis
-                    style={{ marginHorizontal: -10 }}
+                        style={{}}
                         data={data}
-                        formatLabel={(value, index) => index}
-                        contentInset={contentInset}
+                        formatLabel={(value, index) => index + 1}
+                        contentInset={{ left: 48, right: 16 }}
                         svg={{ fontSize: 10, fill: '#fa8900' }}
                     />
                 </View>
