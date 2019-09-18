@@ -9,7 +9,7 @@ export default class WaitingPage extends Component {
             <Content style={styles.darkBackground}>
                 <Content style={styles.marginedContent}>
                     <Text style={styles.white20Text}>Waiting for response...</Text>
-                    <Spinner />
+                    <Spinner color='#fa8900' />
                 </Content>
             </Content>
         )

@@ -1,10 +1,10 @@
 import moment from 'moment';
-import { Body, Button, Card, CardItem, Container, Content, DatePicker, Header, Icon, Left, List, ListItem, Right, Text, Title, View } from 'native-base';
+import { Body, Button, Card, CardItem, Container, Content, DatePicker, Header, Icon, Left, List, ListItem, Right, Text, Title, View, Picker } from 'native-base';
 import React from 'react';
 import { BarChart, Grid, XAxis, YAxis } from 'react-native-svg-charts';
 import { connect } from 'react-redux';
 import { formDetailsRequest, navigateTo } from '../redux/actions';
-import { getAllPaymentsToDateFromSubscriptions, getDateObject, getPaymentText } from '../redux/functions';
+import { getAllPaymentsToDateFromSubscriptions, getDateObject, getPaymentText, getMonthlyData } from '../redux/functions';
 import styles from './styles';
 import WaitingPage from './WaitingPage';
 
@@ -12,9 +12,13 @@ class FormDetailsPage extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = { currentDate: new Date() }
         if (!this.props.user.loggedIn) this.props.navigateTo({ page: 'Login' });
         else if (typeof (this.props.user.form) === 'string') this.props.formDetailsRequest(this.props.user.form);
+        this.state = { currentDate: new Date(), selected: '2019', data: [] };
+    }
+
+    onValueChange(value: string) {
+        this.setState({ data: getMonthlyData(this.props.user.form, parseInt(value, 10)), selected: value });
     }
 
     setDate(newDate) {
@@ -30,6 +34,15 @@ class FormDetailsPage extends React.Component {
     }
 
     renderHeader() {
+        let picker = <Picker
+            mode='dropdown'
+            style={styles.white}
+            selectedValue={this.state.selected}
+            onValueChange={this.onValueChange.bind(this)}>
+            <Picker.Item label='2019' value='2019' />
+            <Picker.Item label='2018' value='2018' />
+            <Picker.Item label='2017' value='2017' />
+        </Picker>;
         return (
             <Header androidStatusBarColor='#fa8900' style={styles.orangeBackground}>
                 <Left>
@@ -40,7 +53,9 @@ class FormDetailsPage extends React.Component {
                 <Body>
                     <Title style={styles.white}>{this.props.user.form.title}</Title>
                 </Body>
-                <Right />
+                <Right>
+                    {this.props.user.form.paymentType == "product" && picker}
+                </Right>
             </Header>
         )
     }
@@ -84,7 +99,7 @@ class FormDetailsPage extends React.Component {
     }
 
     renderChart() {
-        const data = [121, 91, 113, 244, 221, 52, 32, 45, 321, 21, 32, 413]
+        if (this.state.data.length === 0) this.setState({ data: getMonthlyData(this.props.user.form, parseInt(this.state.selected, 10)) });
         return (
             <Card transparent style={styles.card}>
                 <CardItem style={styles.cardHeader}>
@@ -94,7 +109,7 @@ class FormDetailsPage extends React.Component {
                     <View style={{ height: 200, flexDirection: 'row' }}>
                         <YAxis
                             style={{ width: 32 }}
-                            data={data}
+                            data={this.state.data}
                             contentInset={{ top: 24, bottom: 12 }}
                             svg={{ fontSize: 10, fill: '#fa8900' }}
                             min={0}
@@ -103,7 +118,7 @@ class FormDetailsPage extends React.Component {
                         />
                         <BarChart
                             style={{ flex: 1, marginLeft: 0 }}
-                            data={data}
+                            data={this.state.data}
                             svg={{ fill: '#fa8900' }}
                             contentInset={{ top: 24, bottom: 12 }}
                             yMin={0}
@@ -113,7 +128,7 @@ class FormDetailsPage extends React.Component {
                     </View>
                     <XAxis
                         style={{}}
-                        data={data}
+                        data={this.state.data}
                         formatLabel={(value, index) => index + 1}
                         contentInset={{ left: 48, right: 16 }}
                         svg={{ fontSize: 10, fill: '#fa8900' }}

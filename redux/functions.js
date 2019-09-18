@@ -10,6 +10,12 @@ const getTimeString = (time) => {
     return moment(Date.parse(time)).format("MMM Do YYYY");
 }
 
+export const getMonthlyData = (form, year) => {
+    let data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    for (i in form.payments) if (form.payments[i].date.year == year) data[parseInt(form.payments[i].date.month, 10)] += parseFloat(form.payments[i].total);
+    return data;
+}
+
 export const getAllPaymentsToDateFromSubscription = (lastDate, subscription) => {
     const payments = subscription.payments, now = moment().format('YYYY MM DD');
     let totalPayment = 0;
