@@ -11,7 +11,7 @@ class SubmissionsPage extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { selected: 'product' };
+        this.state = { selected: 'all' };
         if (!this.props.user.loggedIn) this.props.navigateTo({ page: 'Login' });
         else this.props.submissonsRequest(this.state.selected);
     }

@@ -25,7 +25,7 @@ class FormDetailsPage extends React.Component {
 
     renderHeader() {
         return (
-            <Header  androidStatusBarColor='#fa8900' style={styles.orangeBackground}>
+            <Header androidStatusBarColor='#fa8900' style={styles.orangeBackground}>
                 <Left>
                     <Button transparent onPress={() => this.props.navigation.goBack()}>
                         <Icon name='arrow-back' />
@@ -41,25 +41,29 @@ class FormDetailsPage extends React.Component {
 
     render() {
         if (this.props.user.isLoading) return <WaitingPage />
-        else return (
-            <Container style={styles.darkBackground}>
-                {this.renderHeader()}
-                <Content style={styles.timeLineMargin}>
-                    <Timeline
-                        options={{
-                            removeClippedSubviews: false
-                        }}
-                        lineColor='#fa8900'
-                        timeStyle={{ color: '#CEC9AB' }}
-                        descriptionStyle={{ color: '#CEC9AB' }}
-                        timeContainerStyle={{ minWidth: 128 }}
-                        titleStyle={{ color: '#fa8900' }}
-                        data={getLastXPaymentsFromSubscriptions(500, this.props.user.form.payments)}
-                        style={styles.darkBackground}
-                    />
-                </Content>
-            </Container>
-        )
+        else {
+            let data = getLastXPaymentsFromSubscriptions(500, this.props.user.form.payments);
+            console.log(data);
+            return (
+                <Container style={styles.darkBackground}>
+                    {this.renderHeader()}
+                    <Content style={styles.timeLineMargin}>
+                        <Timeline
+                            options={{
+                                removeClippedSubviews: false
+                            }}
+                            lineColor='#fa8900'
+                            timeStyle={{ color: '#CEC9AB' }}
+                            descriptionStyle={{ color: '#CEC9AB' }}
+                            timeContainerStyle={{ minWidth: 128 }}
+                            titleStyle={{ color: '#fa8900' }}
+                            data={data}
+                            style={styles.darkBackground}
+                        />
+                    </Content>
+                </Container>
+            )
+        }
     }
 }
 

@@ -136,7 +136,7 @@ class SubmissionDetailsPage extends React.Component {
                 </ListItem>
                 <ListItem>
                     <Left><Text style={styles.listTitleText}>Customer name: </Text></Left>
-                    <Text style={styles.listTitleText}>{payment.info.firstName} {payment.info.lastName}</Text>
+                    <Text style={styles.listTitleText}>{payment.info.firstname} {payment.info.lastname}</Text>
                 </ListItem>
                 <ListItem>
                     <Left><Text style={styles.listTitleText}>Payment date: </Text></Left>

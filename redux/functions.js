@@ -28,7 +28,7 @@ export const getAllPaymentsToDateFromSubscription = (lastDate, subscription) => 
 
 export const getAllPaymentsToDateFromSubscriptions = (lastDate, subscriptions) => {
     let totalPayment = 0;
-    for (j in subscriptions) totalPayment += getAllPaymentsToDateFromSubscription(lastDate, subscriptions[j])
+    for (j in subscriptions) totalPayment += getAllPaymentsToDateFromSubscription(lastDate, subscriptions[j]);
     return totalPayment;
 }
 
@@ -85,13 +85,13 @@ export const getPaymentFromSubmission = (submission) => {
             }
         }
     }
-    return payment
+    return payment;
 }
 
 export const getPaymentText = (payment) => {
     if (payment.paymentType == 'subscription') return (`${payment.period} ${payment.price} ${payment.currency}`);
     if (payment.paymentType == 'product') return (`${payment.total} ${payment.currency}`);
-    else return (`No payment`)
+    else return (`No payment`);
 }
 
 const incrementDate = (date, increment) => {
