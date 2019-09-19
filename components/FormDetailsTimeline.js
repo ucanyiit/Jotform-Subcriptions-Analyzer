@@ -43,7 +43,6 @@ class FormDetailsPage extends React.Component {
         if (this.props.user.isLoading) return <WaitingPage />
         else {
             let data = getLastXPaymentsFromSubscriptions(500, this.props.user.form.payments);
-            console.log(data);
             return (
                 <Container style={styles.darkBackground}>
                     {this.renderHeader()}
