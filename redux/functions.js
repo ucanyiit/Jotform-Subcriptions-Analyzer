@@ -63,7 +63,7 @@ export const filterSubmission = (submission, type) => {
 }
 
 export const filterForm = (form, type) => {
-    for (submission of form.submissions) if (type == getPaymentFromSubmission(submission).paymentType) return 1;
+    for (submission of form.submissions) if (filterSubmission(submission, type)) return 1;
     return 0;
 }
 

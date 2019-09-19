@@ -20,9 +20,8 @@ export const loginRequest = ({ username, password }) => dispatch => {
 
 export const logoutRequest = () => dispatch => {
     dispatch(requestStarted());
-    axios.post('https://api.jotform.com/user/logout')
-        .then(res => { dispatch(logoutSuccess(res.data.content)) })
-        .catch(err => { dispatch(requestFailure(err)) })
+    dispatch(logoutSuccess());
+    dispatch(navigateTo({ page: 'Login' }));
 };
 
 export const registerRequest = ({ username, password, email }) => dispatch => {
@@ -57,14 +56,17 @@ export const formDetailsRequest = id => (dispatch, getState) => {
     axios.get(`https://api.jotform.com/form/${id}`, { params: { apikey: { ...getState().user }.content.appKey } })
         .then(res => {
             let form = res.data.content;
-            axios.get(`https://api.jotform.com/form/${form.id}/submissions`, { params: { apikey: { ...getState().user }.content.appKey } })
+            axios.get(`https://api.jotform.com/form/${form.id}/submissions`, {
+                params: { apikey: { ...getState().user }.content.appKey },
+                limit: 500
+            })
                 .then(res => {
                     let payments = [];
                     for (submission of res.data.content) {
                         let payment = getPaymentFromSubmission(submission);
                         payments.push(payment);
                         submission.payment = payment;
-                        if(payment.paymentType) form.paymentType = payment.paymentType;
+                        if (payment.paymentType) form.paymentType = payment.paymentType;
                     }
                     form.submissions = res.data.content;
                     form.payments = payments;
@@ -77,7 +79,12 @@ export const formDetailsRequest = id => (dispatch, getState) => {
 
 export const formsRequest = (type) => (dispatch, getState) => {
     dispatch(requestStarted());
-    axios.get('https://api.jotform.com/user/forms', { params: { apikey: { ...getState().user }.content.appKey } })
+    axios.get('https://api.jotform.com/user/forms', {
+        params: {
+            apikey: { ...getState().user }.content.appKey,
+            limit: 50
+        }
+    })
         .then(res => {
             let forms = res.data.content, requestArr = [];
             if (type == "all") dispatch(getFormsSuccess(forms));
@@ -87,7 +94,19 @@ export const formsRequest = (type) => (dispatch, getState) => {
                     .then(axios.spread((...res) => {
                         let filteredForms = [];
                         for (i in forms) forms[i].submissions = res[i].data.content;
-                        for (i in forms) if (filterForm(forms[i], type)) filteredForms.push(forms[i]);
+                        for (form of forms) {
+                            console.log('form')
+                            for (submission of form.submissions) {
+                                console.log('submission');
+                                if (filterSubmission(submission, type)) {
+                                    console.log('if');
+                                    filteredForms.push(form);
+                                    console.log(filteredForms);
+                                    break;
+                                }
+                            }
+
+                        }
                         dispatch(getFormsSuccess(filteredForms));
                     }))
                     .catch(axios.spread((err) => { dispatch(requestFailure(err)) }))

@@ -1,6 +1,5 @@
 import { Button, Container, Content, Form, Input, Item, Text } from 'native-base';
 import React, { Component } from 'react';
-import { View } from 'react-native';
 import { connect } from 'react-redux';
 import { loadNavigation, loginRequest, navigateTo, noLogin } from '../redux/actions';
 import styles from './styles';
