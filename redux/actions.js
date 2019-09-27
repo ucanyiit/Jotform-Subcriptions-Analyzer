@@ -10,7 +10,7 @@ export const noLogin = ({ apikey }) => dispatch => {
 
 export const loginRequest = ({ username, password }) => dispatch => {
     dispatch(requestStarted());
-    axios.post('https://api.jotform.com/user/login', qs.stringify({ username, password, access: 'full', appName: 'ucanyiit' }))
+    axios.post('https://api.jotform.com/user/login', qs.stringify({ username, password, access: 'full', appName: 'JotFormPaymentsAnalyzer' }))
         .then((res) => {
             dispatch(loginSuccess(res.data.content));
             dispatch(navigateTo({ page: "Submissions" }));
@@ -95,13 +95,9 @@ export const formsRequest = (type) => (dispatch, getState) => {
                         let filteredForms = [];
                         for (i in forms) forms[i].submissions = res[i].data.content;
                         for (form of forms) {
-                            console.log('form')
                             for (submission of form.submissions) {
-                                console.log('submission');
                                 if (filterSubmission(submission, type)) {
-                                    console.log('if');
                                     filteredForms.push(form);
-                                    console.log(filteredForms);
                                     break;
                                 }
                             }

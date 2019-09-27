@@ -11,7 +11,6 @@ class LoginPage extends Component {
         super(props);
         this.state = {};
         if (!this.props.nav) this.props.loadNavigation(this.props.navigation);
-        this.props.noLogin({ apikey: '8876d82ca5bc5f1ded14347d80c49f4c' });
         if (this.props.user.loggedIn) this.props.navigateTo({ page: 'Forms' });
     }
 
